@@ -1,22 +1,13 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { AppProps } from 'next/app';
 import { ThemeContextProvider } from '@/context/ThemeProvider';
 import Head from 'next/head';
 import { Box, Flex } from '@chakra-ui/react';
 import WalletConnectionProvider from '@/context/WalletConnectionProvider';
 import { ReactQueryProvider } from '@/context/ReactQueryProvider';
 import { useState } from 'react';
+import '../styles/globals.css';
 
-export const metadata: Metadata = {
-  title: 'Optimistic Oracle',
-  description: '',
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function App({ Component, pageProps }: AppProps) {
   const [favicon, setFavicon] = useState('/favicon-light.ico');
 
   return (
@@ -33,7 +24,7 @@ export default function RootLayout({
               minH='calc(100vh)' // Footer h 473; Header h 66
               justifyContent='center'
             >
-              {children}
+              <Component {...pageProps} />
             </Flex>
           </Box>
         </ReactQueryProvider>
