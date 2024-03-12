@@ -10,6 +10,8 @@ import {
 import { MainColorSet } from '@/theme/types';
 import Search from '@/components/Search/Search';
 import ProposalTable from '@/components/Proposals/ProposalTable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEarthAmericas } from '@fortawesome/free-solid-svg-icons';
 
 const content = [
   {
@@ -33,11 +35,17 @@ const Proposals = () => {
         <VStack mx='auto' px='16px' maxW='1144px' minW='343px' w='full'>
           <VStack bg={black} w='full' pb='40px'>
             <HStack my='20px' w='full' justifyContent='flex-start'>
-              <Image />
+              <Flex mr='10px'>
+                <FontAwesomeIcon
+                  icon={faEarthAmericas}
+                  width='54px'
+                  color={white}
+                />
+              </Flex>
               <Text
                 textStyle='H1'
                 color={white}
-                fontSize={'clamp(2.5rem, 2rem + 2.5vw, 4rem)'}
+                fontSize={`clamp(2.5rem, 2rem + 2.5vw, 4rem)`}
               >
                 Propose answers to <span color={bluePrimary}>925</span> requests
               </Text>
@@ -51,9 +59,9 @@ const Proposals = () => {
               gap='8px'
               bg='#2D2A2F'
             >
-              {content.map((item) => {
+              {content.map((item, idx) => {
                 return (
-                  <HStack>
+                  <HStack key={idx}>
                     <Flex alignItems='flex-start' h='full'>
                       <Box w='22px' h='22px' bg={white} borderRadius='50%'>
                         <Text

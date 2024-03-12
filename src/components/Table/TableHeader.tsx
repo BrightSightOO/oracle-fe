@@ -10,8 +10,10 @@ const TableHeader = ({
       <Show above='sm'>
         <Thead>
           <Tr>
-            {headerInfo.map((header) => (
-              <Th maxW={header.maxW || 'fit-content'}>{header.title}</Th>
+            {headerInfo.map((header, idx) => (
+              <Th key={idx} maxW={header.maxW || 'fit-content'}>
+                {header.title}
+              </Th>
             ))}
           </Tr>
         </Thead>

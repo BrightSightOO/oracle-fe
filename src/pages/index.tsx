@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <>
-      <Head>
+      <Head id='Optimistic Oracle'>
         <title>Optimistic Oracle</title>
       </Head>
       <Flex mx='auto' flexDir='column' w='100%' bg={backgroundMain}>

@@ -32,7 +32,7 @@ export const ThemeContextProvider: FC<ScriptProps> = ({ children }) => {
     if (data === 'light' || data === 'dark') {
       setIsLightTheme(data === 'light');
     }
-  });
+  }, []);
 
   const chakraTheme = extendTheme(theme, {
     colors: colorTheme[isLightTheme ? 'light' : 'dark'],

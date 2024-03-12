@@ -41,9 +41,9 @@ const TableDataCard = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const displayQueryData = (data: ProposalType) => {
+  const displayQueryData = (data: ProposalType, idx: number) => {
     return (
-      <TableData maxW='634px'>
+      <TableData key={idx} maxW='634px'>
         <HStack alignItems='center'>
           <Flex mr='5px'>
             <FontAwesomeIcon
@@ -81,10 +81,10 @@ const TableDataCard = ({
   return (
     <Tr cursor='pointer' onClick={onOpen}>
       <ProposalDrawer data={row} isOpen={isOpen} onClose={onClose} />
-      {bodyInfo.map((info) => {
+      {bodyInfo.map((info, idx) => {
         if (info.title === '') {
           return (
-            <TableData maxW={info.maxW || 'fit-content'}>
+            <TableData key={idx} maxW={info.maxW || 'fit-content'}>
               {' '}
               <FontAwesomeIcon
                 icon={faCircleArrowRight}
@@ -100,7 +100,7 @@ const TableDataCard = ({
 
         if (info.title === 'bond' || info.title === 'reward') {
           return (
-            <TableData maxW={info.maxW || 'fit-content'}>
+            <TableData key={idx} maxW={info.maxW || 'fit-content'}>
               <HStack>
                 <USDCLogo width='16px' height='16px' />
                 <Text>
@@ -114,10 +114,10 @@ const TableDataCard = ({
         }
 
         if (info.title === 'title') {
-          return displayQueryData(row);
+          return displayQueryData(row, idx);
         }
         return (
-          <TableData style={{ maxWidth: info.maxW || 'fit-content' }}>
+          <TableData key={idx} style={{ maxWidth: info.maxW || 'fit-content' }}>
             <Text
               whiteSpace='wrap'
               overflow='hidden'
