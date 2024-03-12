@@ -37,11 +37,18 @@ const ProposalDrawer = ({
   return (
     <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
       <DrawerOverlay />
-      <DrawerContent minW={{ base: 'full', sm: '553px' }}>
-        <HStack bg={black} px='28px' justifyContent='flex-start'>
+      <DrawerContent minW={{ base: 'full', sm: '553px' }} w='full'>
+        <HStack w='full' bg={black} justifyContent='flex-start'>
           <DrawerCloseButton bg={white} />
           <DrawerHeader color={white} w='full'>
-            {data.title}
+            <Text
+              minW={{ base: '300px', sm: '470px' }}
+              maxW='470px'
+              w='full'
+              whiteSpace='wrap'
+            >
+              {data.title}
+            </Text>
           </DrawerHeader>
         </HStack>
         <DrawerBody px='0'>
