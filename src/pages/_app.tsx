@@ -5,7 +5,9 @@ import { Box, Flex } from '@chakra-ui/react';
 import WalletConnectionProvider from '@/context/WalletConnectionProvider';
 import { ReactQueryProvider } from '@/context/ReactQueryProvider';
 import { useState } from 'react';
+import '@/styles/fonts.css';
 import '../styles/globals.css';
+import Header from '@/components/Navigation/Header';
 
 export default function App({ Component, pageProps }: AppProps) {
   const [favicon, setFavicon] = useState('/favicon-light.ico');
@@ -14,16 +16,17 @@ export default function App({ Component, pageProps }: AppProps) {
     <ThemeContextProvider>
       <Head>
         <link rel='icon' href={favicon} />
-        <title>Hedgehog Markets</title>
-        <script src='https://terminal.jup.ag/main-v2.js' />
+        <title>Optimistic Oracle</title>
       </Head>
       <WalletConnectionProvider>
         <ReactQueryProvider>
           <Box h='100vh'>
             <Flex
-              minH='calc(100vh)' // Footer h 473; Header h 66
+              minH='calc(100vh - 66px)' // Footer h 473; Header h 66
               justifyContent='center'
+              flexDir='column'
             >
+              <Header />
               <Component {...pageProps} />
             </Flex>
           </Box>
