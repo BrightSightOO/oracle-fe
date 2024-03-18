@@ -7,7 +7,6 @@ import {
   Text,
   Tr,
   VStack,
-  chakra,
   useDisclosure,
   useTheme,
 } from '@chakra-ui/react';
@@ -18,14 +17,14 @@ import {
   faEarthAmericas,
 } from '@fortawesome/free-solid-svg-icons';
 import USDCLogo from '../Svg/USDCLogo';
-import { ProposalType } from '@/types/proposals';
+import { OracleType } from '@/types/tableData';
 import { MainColorSet } from '@/theme/types';
 
 const TableDataCardMobile = ({
   row,
   bodyInfo,
 }: {
-  row: ProposalType;
+  row: OracleType;
   bodyInfo: Record<string, string>[];
 }) => {
   const { colors } = useTheme();
@@ -33,7 +32,7 @@ const TableDataCardMobile = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const displayQueryData = (data: ProposalType) => {
+  const displayQueryData = (data: OracleType) => {
     return (
       <VStack w='full'>
         <HStack w='full' justifyContent='space-between'>
@@ -95,9 +94,7 @@ const TableDataCardMobile = ({
             <HStack>
               <USDCLogo width='16px' height='16px' />
               <Text>
-                {info.title in row
-                  ? row[info.title as keyof ProposalType]
-                  : null}
+                {info.title in row ? row[info.title as keyof OracleType] : null}
               </Text>
             </HStack>
           </HStack>
@@ -117,7 +114,7 @@ const TableDataCardMobile = ({
               noOfLines={2}
               maxW={info.maxW || 'fit-content'}
             >
-              {info.title in row ? row[info.title as keyof ProposalType] : null}
+              {info.title in row ? row[info.title as keyof OracleType] : null}
             </Text>
           </HStack>
         );

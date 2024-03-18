@@ -17,7 +17,7 @@ import {
   faEarthAmericas,
 } from '@fortawesome/free-solid-svg-icons';
 import USDCLogo from '../Svg/USDCLogo';
-import { ProposalType } from '@/types/proposals';
+import { OracleType } from '@/types/tableData';
 import { MainColorSet } from '@/theme/types';
 
 const TableData = chakra(Td, {
@@ -33,7 +33,7 @@ const TableDataCard = ({
   row,
   bodyInfo,
 }: {
-  row: ProposalType;
+  row: OracleType;
   bodyInfo: Record<string, string>[];
 }) => {
   const { colors } = useTheme();
@@ -41,7 +41,7 @@ const TableDataCard = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const displayQueryData = (data: ProposalType, idx: number) => {
+  const displayQueryData = (data: OracleType, idx: number) => {
     return (
       <TableData key={idx} maxW='634px'>
         <HStack alignItems='center'>
@@ -103,18 +103,14 @@ const TableDataCard = ({
             <TableData key={idx} maxW={info.maxW || 'fit-content'}>
               <HStack>
                 <USDCLogo width='16px' height='16px' />
-                <Text>
-                  {info.title in row
-                    ? row[info.title as keyof ProposalType]
-                    : null}
-                </Text>
+                <Text>{info.title in row ? row[info.title] : null}</Text>
               </HStack>
             </TableData>
           );
         }
 
         if (info.title === 'title') {
-          return displayQueryData(row, idx);
+          return displayQueryData(row as OracleType, idx);
         }
         return (
           <TableData key={idx} style={{ maxWidth: info.maxW || 'fit-content' }}>
@@ -125,7 +121,7 @@ const TableDataCard = ({
               noOfLines={2}
               maxW={info.maxW || 'fit-content'}
             >
-              {info.title in row ? row[info.title as keyof ProposalType] : null}
+              {info.title in row ? row[info.title as keyof OracleType] : null}
             </Text>
           </TableData>
         );
