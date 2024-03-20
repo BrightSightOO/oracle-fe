@@ -1,6 +1,6 @@
 import { Table, TableContainer, useTheme } from '@chakra-ui/react';
 import TableHeader from './TableHeader';
-import { ProposalType } from '@/types/proposals';
+import { OracleType } from '@/types/tableData';
 import TableBody from './TableBody';
 
 const TableWrapper = ({
@@ -9,7 +9,7 @@ const TableWrapper = ({
   bodyInfo,
   variant = 'simple',
 }: {
-  data: ProposalType[];
+  data: OracleType[];
   headerInfo: Record<string, string>[];
   bodyInfo: Record<string, string>[];
   variant?: 'simple' | 'striped' | 'unstyled';

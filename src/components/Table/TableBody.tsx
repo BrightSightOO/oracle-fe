@@ -1,5 +1,5 @@
 import { MainColorSet } from '@/theme/types';
-import { ProposalType } from '@/types/proposals';
+import { OracleType } from '@/types/tableData';
 import { Show, Tbody, useTheme } from '@chakra-ui/react';
 import TableDataCard from './TableDataCard';
 import TableDataCardMobile from './TableDataCardMobile';
@@ -8,7 +8,7 @@ const TableBody = ({
   data,
   bodyInfo,
 }: {
-  data: ProposalType[];
+  data: OracleType[];
   bodyInfo: Record<string, string>[];
 }) => {
   const { colors } = useTheme();

@@ -1,7 +1,7 @@
 import { OracleType } from '@/types/tableData';
 import DrawerWrapper from '../Drawer/DrawerWrapper';
 
-const ProposalDrawer = ({
+const SettledDrawer = ({
   data,
   isOpen,
   onClose,
@@ -13,4 +13,4 @@ const ProposalDrawer = ({
   return <DrawerWrapper data={data} isOpen={isOpen} onClose={onClose} />;
 };
 
-export default ProposalDrawer;
+export default SettledDrawer;
