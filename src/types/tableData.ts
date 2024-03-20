@@ -15,7 +15,7 @@ export type OracleType = {
   identifier?: string;
   requester?: string;
   requestTxn?: string;
-  settled?: string;
+  settled?: string | null;
   asserter?: string;
   escalationManager?: string;
   callbackRecipient?: string;
@@ -23,7 +23,7 @@ export type OracleType = {
   assertionTxn?: string;
   settlementRecipient?: string;
   settlementTxn?: string;
-  voteStatus?: string;
+  voteStatus?: string | null;
 };
 
 export enum TableDataEnum {
