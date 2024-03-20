@@ -34,7 +34,7 @@ const DrawerInformation = ({ data }: { data: OracleType }) => {
   const { bluePrimary, black } = colors as MainColorSet;
 
   return (
-    <VStack px='28px' alignItems='flex-start'>
+    <VStack px='28px' w='full' alignItems='flex-start'>
       <Text textStyle='H5' fontWeight='700' mt='16px'>
         More information
       </Text>

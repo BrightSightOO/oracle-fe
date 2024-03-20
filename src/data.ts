@@ -994,3 +994,54 @@ export const settledData = [
       '0x915fc30200ea71dbf713132cc5517a9d45e824170e36a6cf8160211187d6411f',
   },
 ];
+
+export const voteData = [
+  {
+    title:
+      'Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday?',
+    chain: 'Solana',
+    dateCreated: '3/04/2024, 5:27PM',
+    identifier: 'YES_OR_NO_QUERY',
+    type: 'Optimistic Oracle',
+    settled: 'Yes',
+    request: ['Yes', 'No'],
+    voteStatus: 'Yes',
+    description:
+      'As of assertion timestamp 1710302546. Using the following resources for validation {chain: Arbitrum, dataSource: Chainlink, assetIdOnDataSource: ETH/USD, methodologyUrl: https://shorturl.at/cqBJS, scriptUrl: https://shorturl.at/afim8}. The annualised 30-day realised volatility price for Ethereum (ETH) is: 439066180000000000',
+    string:
+      'As of assertion timestamp 1710302546. Using the following resources for validation {chain: Arbitrum, dataSource: Chainlink, assetIdOnDataSource: ETH/USD, methodologyUrl: https://shorturl.at/cqBJS, scriptUrl: https://shorturl.at/afim8}. The annualised 30-day realised volatility price for Ethereum (ETH) is: 439066180000000000',
+    oracle: '0xeE3Afe347D5C74317041E2618C49534dAf887c24',
+  },
+  {
+    title:
+      'Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday?',
+    chain: 'Solana',
+    dateCreated: '3/04/2024, 5:27PM',
+    identifier: 'YES_OR_NO_QUERY',
+    type: 'Optimistic Oracle',
+    settled: null,
+    request: ['Yes', 'No'],
+    voteStatus: null,
+    description:
+      'As of assertion timestamp 1710302546. Using the following resources for validation {chain: Arbitrum, dataSource: Chainlink, assetIdOnDataSource: ETH/USD, methodologyUrl: https://shorturl.at/cqBJS, scriptUrl: https://shorturl.at/afim8}. The annualised 30-day realised volatility price for Ethereum (ETH) is: 439066180000000000',
+    string:
+      'As of assertion timestamp 1710302546. Using the following resources for validation {chain: Arbitrum, dataSource: Chainlink, assetIdOnDataSource: ETH/USD, methodologyUrl: https://shorturl.at/cqBJS, scriptUrl: https://shorturl.at/afim8}. The annualised 30-day realised volatility price for Ethereum (ETH) is: 439066180000000000',
+    oracle: '0xeE3Afe347D5C74317041E2618C49534dAf887c24',
+  },
+  {
+    title:
+      'Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday? Coinbase top 25 app by Friday?',
+    chain: 'Solana',
+    dateCreated: '3/04/2024, 5:27PM',
+    identifier: 'YES_OR_NO_QUERY',
+    type: 'Optimistic Oracle',
+    settled: 'Yes',
+    request: ['Yes', 'No'],
+    voteStatus: 'No',
+    description:
+      'As of assertion timestamp 1710302546. Using the following resources for validation {chain: Arbitrum, dataSource: Chainlink, assetIdOnDataSource: ETH/USD, methodologyUrl: https://shorturl.at/cqBJS, scriptUrl: https://shorturl.at/afim8}. The annualised 30-day realised volatility price for Ethereum (ETH) is: 439066180000000000',
+    string:
+      'As of assertion timestamp 1710302546. Using the following resources for validation {chain: Arbitrum, dataSource: Chainlink, assetIdOnDataSource: ETH/USD, methodologyUrl: https://shorturl.at/cqBJS, scriptUrl: https://shorturl.at/afim8}. The annualised 30-day realised volatility price for Ethereum (ETH) is: 439066180000000000',
+    oracle: '0xeE3Afe347D5C74317041E2618C49534dAf887c24',
+  },
+];

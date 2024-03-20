@@ -5,9 +5,9 @@ export const tableDataType = ({
   requester,
   voteStatus,
 }: {
-  settled: string | undefined;
+  settled: string | null | undefined;
   requester: string | undefined;
-  voteStatus: string | undefined;
+  voteStatus: string | null | undefined;
 }) => {
   if (settled) {
     return TableDataEnum.Settled;

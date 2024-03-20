@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   HStack,
   Select,
   Text,
@@ -31,7 +32,7 @@ const DrawerRequestDetails = ({
       <Text textStyle='H5' fontWeight='700'>
         Request (price)
       </Text>
-      {data.request && (
+      {data.request && !data.settled && (
         <Select placeholder='Select option' bg={white} my='10px'>
           {data.request.map((option, idx) => {
             if (option === requestOption) {
@@ -46,7 +47,11 @@ const DrawerRequestDetails = ({
           })}
         </Select>
       )}
-      {data.settled && <Text textStyle='H5'>{data.settled}</Text>}
+      {data.settled && (
+        <Flex bg={white} w='full' minH='44px' px='16px' alignItems='center'>
+          <Text textStyle='H5'>{data.settled}</Text>
+        </Flex>
+      )}
 
       {data.bond && (
         <HStack w='full' justifyContent='space-between'>
