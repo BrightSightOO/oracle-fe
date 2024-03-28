@@ -9,6 +9,8 @@ import { Umi } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import { bundlrUploader } from '@metaplex-foundation/umi-uploader-bundlr';
+import { optimisticOracle } from '@/program-sdks/oracle';
+import { parimutuelResolver } from '@/program-sdks/par-resolver';
 
 type UmiContext = {
   umi: Umi | null;
@@ -45,7 +47,9 @@ export const UmiProvider = ({
     .use(mplToolbox())
     .use(mplBubblegum())
     .use(dasApi())
-    .use(mplCandyMachine());
+    .use(mplCandyMachine())
+    .use(optimisticOracle())
+    .use(parimutuelResolver());
 
   return <UmiContext.Provider value={{ umi }}>{children}</UmiContext.Provider>;
 };
