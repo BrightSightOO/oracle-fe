@@ -112,7 +112,7 @@ const DrawerRequestDetails = ({
       <HStack w='full' justifyContent='space-between'>
         <HStack>
           <Text textStyle='Body' color={black}>
-            Challenge period ends
+            Dispute period ends
           </Text>
           <Tooltip
             p='20px'

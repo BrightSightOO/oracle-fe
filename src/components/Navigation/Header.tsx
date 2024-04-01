@@ -23,7 +23,7 @@ const Header = () => {
         h='66px'
         px='16px'
       >
-        <Text color={white}>Oracle</Text>
+        <Text color={white}>Bright Sight Optimistic Oracle</Text>
         <Navigation />
         <Show above='md'>
           <Flex justifyContent='center' minW='190px'>

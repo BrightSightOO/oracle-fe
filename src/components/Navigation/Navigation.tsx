@@ -25,9 +25,9 @@ export enum NAVIGATION_OPTIONS {
 }
 
 const NAV_NAME_MAP = {
-  [NAVIGATION_OPTIONS.VERIFY]: 'Verify',
-  [NAVIGATION_OPTIONS.PROPOSE]: 'Propose',
-  [NAVIGATION_OPTIONS.SETTLED]: 'Settled',
+  // [NAVIGATION_OPTIONS.VERIFY]: 'Verify',
+  // [NAVIGATION_OPTIONS.PROPOSE]: 'Propose',
+  // [NAVIGATION_OPTIONS.SETTLED]: 'Settled',
 };
 
 const Navigation = () => {
