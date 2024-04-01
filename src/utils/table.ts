@@ -1,4 +1,4 @@
-import { TableDataEnum } from '@/types/tableData';
+import { TableDataEnum } from "@/types/table";
 
 export const tableDataType = ({
   settled,

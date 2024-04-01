@@ -61,11 +61,11 @@ const Proposals = () => {
           })}
         </Flex>
       </PageHeader>
-      <Flex w='full' bg={white}>
+      {/* <Flex w='full' bg={white}>
         <Flex mx='auto' px='16px' maxW='1144px' minW='343px' w='full'>
           <Search />
         </Flex>
-      </Flex>
+      </Flex> */}
       <Flex w='full' pb='64px' bg={background}>
         <Flex mx='auto' maxW='1144px' minW='343px' w='full'>
           <ProposalTable />

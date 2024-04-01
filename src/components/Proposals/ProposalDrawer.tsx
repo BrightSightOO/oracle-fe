@@ -1,5 +1,5 @@
-import { OracleType } from '@/types/tableData';
-import DrawerWrapper from '../Drawer/DrawerWrapper';
+import { OracleType } from "@/types/table";
+import DrawerWrapper from "../Drawer/DrawerWrapper";
 
 const ProposalDrawer = ({
   data,

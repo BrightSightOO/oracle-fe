@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   HStack,
+  Image,
   Select,
   Text,
   Tooltip,
@@ -10,10 +11,9 @@ import {
 } from '@chakra-ui/react';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import USDCLogo from '../Svg/USDCLogo';
 import { useState } from 'react';
 import { MainColorSet } from '@/theme/types';
-import { OracleType, TableDataEnum } from '@/types/tableData';
+import { OracleType, TableDataEnum } from '@/types/table';
 
 const DrawerRequestDetails = ({
   data,
@@ -74,7 +74,11 @@ const DrawerRequestDetails = ({
             </Tooltip>
           </HStack>
           <HStack>
-            <USDCLogo width='16px' height='16px' />
+            <Image
+              width='16px'
+              height='16px'
+              src={'assets/common/usdc_logo.svg'}
+            />
             <Text textStyle='Body' color={black}>
               {data.bond}
             </Text>
@@ -102,7 +106,11 @@ const DrawerRequestDetails = ({
             </Tooltip>
           </HStack>
           <HStack>
-            <USDCLogo width='16px' height='16px' />
+            <Image
+              width='16px'
+              height='16px'
+              src={'assets/common/usdc_logo.svg'}
+            />
             <Text textStyle='Body' color={black}>
               {data.reward}
             </Text>

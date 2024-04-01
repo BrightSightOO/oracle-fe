@@ -6,6 +6,7 @@ import {
   Td,
   Text,
   Tr,
+  Image,
   VStack,
   useDisclosure,
   useTheme,
@@ -16,8 +17,7 @@ import {
   faCircleArrowRight,
   faEarthAmericas,
 } from '@fortawesome/free-solid-svg-icons';
-import USDCLogo from '../Svg/USDCLogo';
-import { OracleType } from '@/types/tableData';
+import { OracleType } from '@/types/table';
 import { MainColorSet } from '@/theme/types';
 
 const TableDataCardMobile = ({
@@ -92,12 +92,16 @@ const TableDataCardMobile = ({
               {info.title.charAt(0).toUpperCase() + info.title.slice(1)}
             </Text>
             <HStack>
-              <USDCLogo width='16px' height='16px' />
+              <Image
+                width='16px'
+                height='16px'
+                src={'assets/common/usdc_logo.svg'}
+              />
               <Text>
                 {info.title in row ? row[info.title as keyof OracleType] : null}
               </Text>
             </HStack>
-          </HStack>
+          </HStack>,
         );
       } else if (info.title === 'title') {
         elementsToRender.push(displayQueryData(row));
@@ -116,7 +120,7 @@ const TableDataCardMobile = ({
             >
               {info.title in row ? row[info.title as keyof OracleType] : null}
             </Text>
-          </HStack>
+          </HStack>,
         );
       }
     }

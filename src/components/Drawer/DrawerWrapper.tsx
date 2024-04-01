@@ -9,14 +9,14 @@ import {
   Text,
   VStack,
   useTheme,
-} from '@chakra-ui/react';
-import { MainColorSet } from '@/theme/types';
-import { OracleType } from '@/types/tableData';
-import DrawerRequestDetails from './DrawerRequestDetails';
-import { tableDataType } from '@/utils/table';
-import DrawerTimestamps from './DrawerTimestamps';
-import DrawerTextData from './DrawerTextData';
-import DrawerInformation from './DrawerInformation';
+} from "@chakra-ui/react";
+import { MainColorSet } from "@/theme/types";
+import { OracleType } from "@/types/table";
+import DrawerRequestDetails from "./DrawerRequestDetails";
+import { tableDataType } from "@/utils/table";
+import DrawerTimestamps from "./DrawerTimestamps";
+import DrawerTextData from "./DrawerTextData";
+import DrawerInformation from "./DrawerInformation";
 
 const DrawerWrapper = ({
   data,
@@ -39,12 +39,12 @@ const DrawerWrapper = ({
   return (
     <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
       <DrawerOverlay />
-      <DrawerContent minW={{ base: 'full', sm: '553px' }} w='full'>
+      <DrawerContent minW={{ base: "full", sm: "553px" }} w='full'>
         <HStack w='full' bg={black} justifyContent='flex-start'>
           <DrawerCloseButton bg={white} />
           <DrawerHeader color={white} w='full'>
             <Text
-              minW={{ base: '300px', sm: '470px' }}
+              minW={{ base: "300px", sm: "470px" }}
               maxW='470px'
               w='full'
               whiteSpace='wrap'

@@ -6,26 +6,26 @@ import {
   Text,
   Tr,
   VStack,
+  Image,
   chakra,
   useDisclosure,
   useTheme,
-} from '@chakra-ui/react';
-import ProposalDrawer from '../Proposals/ProposalDrawer';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "@chakra-ui/react";
+import ProposalDrawer from "../Proposals/ProposalDrawer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleArrowRight,
   faEarthAmericas,
-} from '@fortawesome/free-solid-svg-icons';
-import USDCLogo from '../Svg/USDCLogo';
-import { OracleType } from '@/types/tableData';
-import { MainColorSet } from '@/theme/types';
+} from "@fortawesome/free-solid-svg-icons";
+import { OracleType } from "@/types/table";
+import { MainColorSet } from "@/theme/types";
 
 const TableData = chakra(Td, {
   baseStyle: {
-    px: '20px',
-    py: '1px',
-    w: 'full',
-    h: '80px',
+    px: "20px",
+    py: "1px",
+    w: "full",
+    h: "80px",
   },
 });
 
@@ -82,44 +82,48 @@ const TableDataCard = ({
     <Tr cursor='pointer' onClick={onOpen}>
       <ProposalDrawer data={row} isOpen={isOpen} onClose={onClose} />
       {bodyInfo.map((info, idx) => {
-        if (info.title === '') {
+        if (info.title === "") {
           return (
-            <TableData key={idx} maxW={info.maxW || 'fit-content'}>
-              {' '}
+            <TableData key={idx} maxW={info.maxW || "fit-content"}>
+              {" "}
               <FontAwesomeIcon
                 icon={faCircleArrowRight}
                 cursor='pointer'
                 color={bluePrimary}
                 style={{
-                  width: '25px',
+                  width: "25px",
                 }}
               />
             </TableData>
           );
         }
 
-        if (info.title === 'bond' || info.title === 'reward') {
+        if (info.title === "bond" || info.title === "reward") {
           return (
-            <TableData key={idx} maxW={info.maxW || 'fit-content'}>
+            <TableData key={idx} maxW={info.maxW || "fit-content"}>
               <HStack>
-                <USDCLogo width='16px' height='16px' />
+                <Image
+                  width='16px'
+                  height='16px'
+                  src={"assets/common/usdc_logo.svg"}
+                />
                 <Text>{info.title in row ? row[info.title] : null}</Text>
               </HStack>
             </TableData>
           );
         }
 
-        if (info.title === 'title') {
+        if (info.title === "title") {
           return displayQueryData(row as OracleType, idx);
         }
         return (
-          <TableData key={idx} style={{ maxWidth: info.maxW || 'fit-content' }}>
+          <TableData key={idx} style={{ maxWidth: info.maxW || "fit-content" }}>
             <Text
               whiteSpace='wrap'
               overflow='hidden'
               textOverflow='ellipsis'
               noOfLines={2}
-              maxW={info.maxW || 'fit-content'}
+              maxW={info.maxW || "fit-content"}
             >
               {info.title in row ? row[info.title as keyof OracleType] : null}
             </Text>

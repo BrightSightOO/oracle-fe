@@ -1,18 +1,18 @@
-import { Table, TableContainer, useTheme } from '@chakra-ui/react';
-import TableHeader from './TableHeader';
-import { OracleType } from '@/types/tableData';
-import TableBody from './TableBody';
+import { Table, TableContainer, useTheme } from "@chakra-ui/react";
+import TableHeader from "./TableHeader";
+import { OracleType } from "@/types/table";
+import TableBody from "./TableBody";
 
 const TableWrapper = ({
   data,
   headerInfo,
   bodyInfo,
-  variant = 'simple',
+  variant = "simple",
 }: {
   data: OracleType[];
   headerInfo: Record<string, string>[];
   bodyInfo: Record<string, string>[];
-  variant?: 'simple' | 'striped' | 'unstyled';
+  variant?: "simple" | "striped" | "unstyled";
 }) => {
   const { customScroll } = useTheme();
 

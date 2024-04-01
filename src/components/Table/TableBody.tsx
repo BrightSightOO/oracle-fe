@@ -1,8 +1,8 @@
-import { MainColorSet } from '@/theme/types';
-import { OracleType } from '@/types/tableData';
-import { Show, Tbody, useTheme } from '@chakra-ui/react';
-import TableDataCard from './TableDataCard';
-import TableDataCardMobile from './TableDataCardMobile';
+import { MainColorSet } from "@/theme/types";
+import { OracleType } from "@/types/table";
+import { Show, Tbody, useTheme } from "@chakra-ui/react";
+import TableDataCard from "./TableDataCard";
+import TableDataCardMobile from "./TableDataCardMobile";
 
 const TableBody = ({
   data,

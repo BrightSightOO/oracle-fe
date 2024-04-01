@@ -1,5 +1,5 @@
 import { MainColorSet } from '@/theme/types';
-import { OracleType } from '@/types/tableData';
+import { OracleType } from '@/types/table';
 import { Text, VStack, useTheme } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
