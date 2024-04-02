@@ -9,4 +9,5 @@
 export * from "./createAssertion";
 export * from "./createOracle";
 export * from "./createRequest";
+export * from "./disputeAssertion";
 export * from "./expireAssertion";

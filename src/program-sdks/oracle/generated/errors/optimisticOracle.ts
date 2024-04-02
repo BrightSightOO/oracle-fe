@@ -105,18 +105,87 @@ export class AssertionTooEarlyError extends ProgramError {
 codeToErrorMap.set(0x6, AssertionTooEarlyError);
 nameToErrorMap.set("AssertionTooEarly", AssertionTooEarlyError);
 
-/** DisputeExpireTooEarly: Assertion dispute window has not expired */
-export class DisputeExpireTooEarlyError extends ProgramError {
-  override readonly name: string = "DisputeExpireTooEarly";
+/** DisputeWindowOpen: Dispute window has not expired */
+export class DisputeWindowOpenError extends ProgramError {
+  override readonly name: string = "DisputeWindowOpen";
 
   readonly code: number = 0x7; // 7
 
   constructor(program: Program, cause?: Error) {
-    super("Assertion dispute window has not expired", program, cause);
+    super("Dispute window has not expired", program, cause);
   }
 }
-codeToErrorMap.set(0x7, DisputeExpireTooEarlyError);
-nameToErrorMap.set("DisputeExpireTooEarly", DisputeExpireTooEarlyError);
+codeToErrorMap.set(0x7, DisputeWindowOpenError);
+nameToErrorMap.set("DisputeWindowOpen", DisputeWindowOpenError);
+
+/** DisputeWindowExpired: Dispute window has expired */
+export class DisputeWindowExpiredError extends ProgramError {
+  override readonly name: string = "DisputeWindowExpired";
+
+  readonly code: number = 0x8; // 8
+
+  constructor(program: Program, cause?: Error) {
+    super("Dispute window has expired", program, cause);
+  }
+}
+codeToErrorMap.set(0x8, DisputeWindowExpiredError);
+nameToErrorMap.set("DisputeWindowExpired", DisputeWindowExpiredError);
+
+/** InvalidValue: Value is not valid for the request */
+export class InvalidValueError extends ProgramError {
+  override readonly name: string = "InvalidValue";
+
+  readonly code: number = 0x9; // 9
+
+  constructor(program: Program, cause?: Error) {
+    super("Value is not valid for the request", program, cause);
+  }
+}
+codeToErrorMap.set(0x9, InvalidValueError);
+nameToErrorMap.set("InvalidValue", InvalidValueError);
+
+/** InvalidDispute: Disputed value falls within range of acceptable deviation for asserted value */
+export class InvalidDisputeError extends ProgramError {
+  override readonly name: string = "InvalidDispute";
+
+  readonly code: number = 0xa; // 10
+
+  constructor(program: Program, cause?: Error) {
+    super(
+      "Disputed value falls within range of acceptable deviation for asserted value",
+      program,
+      cause,
+    );
+  }
+}
+codeToErrorMap.set(0xa, InvalidDisputeError);
+nameToErrorMap.set("InvalidDispute", InvalidDisputeError);
+
+/** DisputerIsAsserter: Disputer cannot be the same as the asserter */
+export class DisputerIsAsserterError extends ProgramError {
+  override readonly name: string = "DisputerIsAsserter";
+
+  readonly code: number = 0xb; // 11
+
+  constructor(program: Program, cause?: Error) {
+    super("Disputer cannot be the same as the asserter", program, cause);
+  }
+}
+codeToErrorMap.set(0xb, DisputerIsAsserterError);
+nameToErrorMap.set("DisputerIsAsserter", DisputerIsAsserterError);
+
+/** BondMismatch: Bond mint address does not match */
+export class BondMismatchError extends ProgramError {
+  override readonly name: string = "BondMismatch";
+
+  readonly code: number = 0xc; // 12
+
+  constructor(program: Program, cause?: Error) {
+    super("Bond mint address does not match", program, cause);
+  }
+}
+codeToErrorMap.set(0xc, BondMismatchError);
+nameToErrorMap.set("BondMismatch", BondMismatchError);
 
 /**
  * Attempts to resolve a custom program error from the provided error code.

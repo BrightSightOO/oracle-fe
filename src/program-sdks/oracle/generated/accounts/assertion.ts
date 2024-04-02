@@ -40,28 +40,22 @@ export type Assertion = Account<AssertionAccountData>;
 export type AssertionAccountData = {
   accountType: AccountType;
   request: PublicKey;
-  governance: bigint;
-  bond: bigint;
-  bondMint: PublicKey;
   assertionTimestamp: bigint;
   expirationTimestamp: bigint;
   asserter: PublicKey;
   disputer: PublicKey;
   assertedValue: bigint;
-  resolvedValue: bigint;
+  disputedValue: bigint;
 };
 
 export type AssertionAccountDataArgs = {
   request: PublicKey;
-  governance: number | bigint;
-  bond: number | bigint;
-  bondMint: PublicKey;
   assertionTimestamp: number | bigint;
   expirationTimestamp: number | bigint;
   asserter: PublicKey;
   disputer: PublicKey;
   assertedValue: number | bigint;
-  resolvedValue: number | bigint;
+  disputedValue: number | bigint;
 };
 
 export function getAssertionAccountDataSerializer(): Serializer<
@@ -73,15 +67,12 @@ export function getAssertionAccountDataSerializer(): Serializer<
       [
         ["accountType", getAccountTypeSerializer()],
         ["request", publicKeySerializer()],
-        ["governance", u64()],
-        ["bond", u64()],
-        ["bondMint", publicKeySerializer()],
         ["assertionTimestamp", i64()],
         ["expirationTimestamp", i64()],
         ["asserter", publicKeySerializer()],
         ["disputer", publicKeySerializer()],
         ["assertedValue", u64()],
-        ["resolvedValue", u64()],
+        ["disputedValue", u64()],
       ],
       { description: "AssertionAccountData" },
     ),
@@ -150,34 +141,28 @@ export function getAssertionGpaBuilder(context: Pick<Context, "rpc" | "programs"
     .registerFields<{
       accountType: AccountTypeArgs;
       request: PublicKey;
-      governance: number | bigint;
-      bond: number | bigint;
-      bondMint: PublicKey;
       assertionTimestamp: number | bigint;
       expirationTimestamp: number | bigint;
       asserter: PublicKey;
       disputer: PublicKey;
       assertedValue: number | bigint;
-      resolvedValue: number | bigint;
+      disputedValue: number | bigint;
     }>({
       accountType: [0, getAccountTypeSerializer()],
       request: [1, publicKeySerializer()],
-      governance: [33, u64()],
-      bond: [41, u64()],
-      bondMint: [49, publicKeySerializer()],
-      assertionTimestamp: [81, i64()],
-      expirationTimestamp: [89, i64()],
-      asserter: [97, publicKeySerializer()],
-      disputer: [129, publicKeySerializer()],
-      assertedValue: [161, u64()],
-      resolvedValue: [169, u64()],
+      assertionTimestamp: [33, i64()],
+      expirationTimestamp: [41, i64()],
+      asserter: [49, publicKeySerializer()],
+      disputer: [81, publicKeySerializer()],
+      assertedValue: [113, u64()],
+      disputedValue: [121, u64()],
     })
     .deserializeUsing<Assertion>((account) => deserializeAssertion(account))
     .whereField("accountType", AccountType.Assertion);
 }
 
 export function getAssertionSize(): number {
-  return 177;
+  return 129;
 }
 
 export function findAssertionPda(
