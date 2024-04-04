@@ -61,7 +61,7 @@ const DrawerRequestDetails = ({
             </Text>
             <Tooltip
               p='20px'
-              label='Every request to Optimistic Oracle includes bond and liveness settings that specify the size of the bond that proposers (and disputers) are required to post.'
+              label='Every request to the Bright Sight Oracle includes bond and liveness settings that specify the size of the bond that proposers (and disputers) are required to post.'
             >
               <FontAwesomeIcon
                 icon={faCircleInfo}
@@ -89,7 +89,7 @@ const DrawerRequestDetails = ({
             </Text>
             <Tooltip
               p='20px'
-              label='Every request to Optimistic Oracle includes reward and liveness settings that specify the size of the bond that proposers (and disputers) are required to post.'
+              label='Rewards are posted by data requesters and are distributed to correct proposers once liveness is complete and the proposal is settled.'
             >
               <FontAwesomeIcon
                 icon={faCircleInfo}
@@ -116,7 +116,7 @@ const DrawerRequestDetails = ({
           </Text>
           <Tooltip
             p='20px'
-            label='Every request to Optimistic Oracle includes reward and liveness settings that specify the size of the bond that proposers (and disputers) are required to post.'
+            label='Every request to the Bright Sight Oracle specifies liveness settings that define the length of the challenge period during which a proposal can be challenged.'
           >
             <FontAwesomeIcon
               icon={faCircleInfo}

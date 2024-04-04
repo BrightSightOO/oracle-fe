@@ -19,13 +19,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 export enum NAVIGATION_OPTIONS {
-  VERIFY = '/verify',
+  VERIFY = '/vote',
   PROPOSE = '/propose',
   SETTLED = '/settled',
 }
 
 const NAV_NAME_MAP = {
-  [NAVIGATION_OPTIONS.VERIFY]: 'Verify',
+  [NAVIGATION_OPTIONS.VERIFY]: 'Vote',
   [NAVIGATION_OPTIONS.PROPOSE]: 'Propose',
   [NAVIGATION_OPTIONS.SETTLED]: 'Settled',
 };

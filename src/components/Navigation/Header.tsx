@@ -2,10 +2,11 @@ import { MainColorSet } from '@/theme/types';
 import { Box, Flex, HStack, Show, Text, useTheme } from '@chakra-ui/react';
 import Navigation from './Navigation';
 import dynamic from 'next/dynamic';
+import NavLink from 'next/link';
 
 const Header = () => {
   const { colors } = useTheme();
-  const { white, black } = colors as MainColorSet;
+  const { white, black200 } = colors as MainColorSet;
 
   const WalletMultiButtonDynamic = dynamic(
     async () =>
@@ -14,7 +15,7 @@ const Header = () => {
   );
 
   return (
-    <Box w='full' bg={black}>
+    <Box w='full' bg={black200}>
       <HStack
         justifyContent='space-between'
         maxW='1144px'
@@ -23,7 +24,9 @@ const Header = () => {
         h='66px'
         px='16px'
       >
-        <Text color={white}>Oracle</Text>
+        <NavLink href={'/'} passHref shallow>
+          <Text color={white}>Bright Sight</Text>
+        </NavLink>
         <Navigation />
         <Show above='md'>
           <Flex justifyContent='center' minW='190px'>
