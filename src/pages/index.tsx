@@ -9,8 +9,8 @@ export default function Home() {
 
   return (
     <Flex mx='auto' flexDir='column' w='100%' bg={backgroundMain}>
-      <Head id='Optimistic Oracle'>
-        <title>Optimistic Oracle</title>
+      <Head id='Bright Sight'>
+        <title>Bright Sight</title>
       </Head>
       <Proposals />
     </Flex>
