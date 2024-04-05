@@ -17,10 +17,14 @@ import { MainColorSet } from '@/theme/types';
 import { OracleType, TableDataEnum } from '@/types/table';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useUmi } from '@/context/UmiProvider';
-import { safeFetchResolver } from '@/program-sdks/par-resolver';
 import { publicKey } from '@metaplex-foundation/umi';
 import { ModalContainer, ModalWrapper } from '../UI/Modal';
-import { createAssertion } from '@/program-sdks/oracle';
+import { assertRequest } from '@/program-sdks/oracle/scripts/assertRequest';
+import { expireAndResolveRequest } from '@/program-sdks/oracle/scripts/expireAndResolveRequest';
+import {
+  deserializeResolver,
+  getResolverGpaBuilder,
+} from '@/program-sdks/par-resolver';
 
 const DrawerRequestDetails = ({
   data,
@@ -40,21 +44,31 @@ const DrawerRequestDetails = ({
 
   const handleSubmitOutcome = async () => {
     try {
-      const resolverAccount = await safeFetchResolver(
+      return assertRequest({
         umi,
-        publicKey(data.oracle),
-      );
-      if (!resolverAccount) {
-        throw new Error(`Failed to fetch resolver account: ${data.oracle}`);
-      }
-      await createAssertion(umi, {
-        request: publicKey(data.oracle),
-        bondMint: publicKey(data.bondMint),
-        createAssertionArgs: {
-          __kind: 'V1',
-          value: requestOption === 'Yes' ? 1 : 0,
-        },
-      }).sendAndConfirm(umi);
+        bond: data.bond,
+        bondMint: data.bondMint,
+        request: data.oracle,
+        outcome: requestOption === 'Yes' ? 1n : 0n,
+      });
+    } catch (e) {
+      console.log('ERROR', e);
+      throw e;
+    }
+  };
+
+  const handleSubmitExpireAndResolve = async () => {
+    try {
+      const requestPubkey = publicKey(data.oracle);
+      const resolveAccountRaw = await getResolverGpaBuilder(umi)
+        .whereField('request', requestPubkey)
+        .get();
+      const resolveAccount = deserializeResolver(resolveAccountRaw[0]);
+      return expireAndResolveRequest({
+        umi,
+        request: requestPubkey,
+        market: resolveAccount.market,
+      });
     } catch (e) {
       console.log('ERROR', e);
       throw e;
@@ -66,7 +80,7 @@ const DrawerRequestDetails = ({
       <ModalContainer isOpen={assertModal.isOpen} onClose={assertModal.onClose}>
         <ModalWrapper
           header='Assert Outcome'
-          onClickMain={handleSubmitOutcome}
+          onClickMain={handleSubmitExpireAndResolve}
           onClose={assertModal.onClose}
           buttonText='Confirm'
         >

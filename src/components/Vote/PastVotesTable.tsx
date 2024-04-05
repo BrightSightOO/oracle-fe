@@ -1,6 +1,5 @@
 import { VStack } from '@chakra-ui/react';
 import TableWrapper from '../Table/TableWrapper';
-import { voteData } from '@/data';
 import { useMemo } from 'react';
 
 const PastVotesTable = () => {
@@ -18,8 +17,8 @@ const PastVotesTable = () => {
   ];
 
   const filteredData = useMemo(() => {
-    return voteData.filter((vote) => vote.settled);
-  }, [voteData]);
+    return [];
+  }, []);
 
   return (
     <VStack w='full' pt='20px' px='8px'>

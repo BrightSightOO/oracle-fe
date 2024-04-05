@@ -1,13 +1,10 @@
-import { createContext, FC, useContext, useEffect, useState } from 'react';
+import { createContext, FC, useContext, useState } from 'react';
 import { useUmi } from './UmiProvider';
 import { PublicKey } from '@metaplex-foundation/umi';
 import { getClusterConstant } from '@/constants';
 import {
-  AccountType,
-  fetchOracle,
   fetchOracleFromSeeds,
   findRequestPda,
-  getRequestGpaBuilder,
   Request,
   safeFetchAllRequest,
 } from '@/program-sdks/oracle';
@@ -51,9 +48,6 @@ export const OracleProvider: FC<{
   const [descriptions, setDescriptions] = useState<
     Record<string, ParimutuelMarketSchema>
   >({});
-  console.log('oracleRequestKeys', oracleRequestKeys);
-
-  const OPTIMISTIC_ORACLE = getClusterConstant('OPTIMISTIC_ORACLE');
 
   const prefetchAccounts = async () => {
     const account = await fetchOracleFromSeeds(umi);
