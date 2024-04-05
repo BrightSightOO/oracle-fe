@@ -1,7 +1,7 @@
 import Proposals from '@/components/Proposals/Proposals';
 
-const ProposeHome = () => {
+const ProposePage = () => {
   return <Proposals />;
 };
 
-export default ProposeHome;
+export default ProposePage;

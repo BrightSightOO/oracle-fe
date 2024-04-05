@@ -8,6 +8,7 @@ import { useState } from 'react';
 import '@/styles/fonts.css';
 import '../styles/globals.css';
 import Header from '@/components/Navigation/Header';
+import { OracleProvider } from '@/context/OracleProvider';
 
 export default function App({ Component, pageProps }: AppProps) {
   const [favicon, setFavicon] = useState('/favicon-light.ico');
@@ -20,16 +21,18 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <WalletConnectionProvider>
         <ReactQueryProvider>
-          <Box h='100vh'>
-            <Flex
-              minH='calc(100vh - 66px)' // Footer h 473; Header h 66
-              justifyContent='center'
-              flexDir='column'
-            >
-              <Header />
-              <Component {...pageProps} />
-            </Flex>
-          </Box>
+          <OracleProvider>
+            <Box h='100vh'>
+              <Flex
+                minH='calc(100vh - 66px)' // Footer h 473; Header h 66
+                justifyContent='center'
+                flexDir='column'
+              >
+                <Header />
+                <Component {...pageProps} />
+              </Flex>
+            </Box>
+          </OracleProvider>
         </ReactQueryProvider>
       </WalletConnectionProvider>
     </ThemeContextProvider>

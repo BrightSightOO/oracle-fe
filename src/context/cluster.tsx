@@ -6,7 +6,7 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { ClusterKey, setCluster } from '../constants/index';
 
 export const ClusterContext = createContext<WalletAdapterNetwork>(
-  WalletAdapterNetwork.Devnet
+  WalletAdapterNetwork.Devnet,
 );
 
 export const useCluster = () => useContext(ClusterContext);
@@ -18,14 +18,31 @@ export const ClusterContextProvider: FC<ScriptProps> = ({ children }) => {
   const network = useMemo(() => {
     if (
       _.includes(
-        [WalletAdapterNetwork.Devnet, WalletAdapterNetwork.Mainnet],
-        router.query.network
+        [
+          WalletAdapterNetwork.Devnet,
+          WalletAdapterNetwork.Mainnet,
+          WalletAdapterNetwork.Testnet,
+        ],
+        router.query.network,
       )
     ) {
       return router.query.network as WalletAdapterNetwork;
     }
 
-    return envRpcNetwork as WalletAdapterNetwork;
+    if (
+      _.includes(
+        [
+          WalletAdapterNetwork.Devnet,
+          WalletAdapterNetwork.Mainnet,
+          WalletAdapterNetwork.Testnet,
+        ],
+        envRpcNetwork,
+      )
+    ) {
+      return envRpcNetwork as WalletAdapterNetwork;
+    }
+
+    return WalletAdapterNetwork.Devnet;
   }, [envRpcNetwork, router.query.network]);
 
   useEffect(() => setCluster(network as ClusterKey), [network]);

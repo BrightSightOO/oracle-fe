@@ -1,9 +1,11 @@
 import { PublicKey, publicKey } from '@metaplex-foundation/umi';
 import { NATIVE_MINT } from '@solana/spl-token';
 
+// This token is not available in localnet
 export const QUOTE_TOKEN =
   '3aMbgP7aGsP1sVcFKc6j65zu7UiziP57SMFzf6ptiCSX' as PublicKey<'3aMbgP7aGsP1sVcFKc6j65zu7UiziP57SMFzf6ptiCSX'>;
 
+// This token is not available in localnet
 export const HOGP_TOKEN =
   'HogPo6FEJLBuovJ1suCTw3Yb42i74gnN4KWk1oGHsuqL' as PublicKey<'HogPo6FEJLBuovJ1suCTw3Yb42i74gnN4KWk1oGHsuqL'>;
 

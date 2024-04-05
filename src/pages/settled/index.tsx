@@ -4,7 +4,7 @@ import SettledTable from '@/components/Settled/SettledTable';
 import { MainColorSet } from '@/theme/types';
 import { Flex, useTheme } from '@chakra-ui/react';
 
-const SettledHome = () => {
+const SettledPage = () => {
   const { colors } = useTheme();
   const { white, background, backgroundMain } = colors as MainColorSet;
 
@@ -25,4 +25,4 @@ const SettledHome = () => {
   );
 };
 
-export default SettledHome;
+export default SettledPage;
