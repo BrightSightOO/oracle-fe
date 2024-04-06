@@ -4,19 +4,16 @@ import Head from 'next/head';
 import { Box, Flex } from '@chakra-ui/react';
 import WalletConnectionProvider from '@/context/WalletConnectionProvider';
 import { ReactQueryProvider } from '@/context/ReactQueryProvider';
-import { useState } from 'react';
 import '@/styles/fonts.css';
 import '../styles/globals.css';
 import Header from '@/components/Navigation/Header';
 import { OracleProvider } from '@/context/OracleProvider';
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [favicon, setFavicon] = useState('/favicon.ico');
-
   return (
     <ThemeContextProvider>
       <Head>
-        <link rel='icon' href={favicon} />
+        <link rel='icon' href={'/favicon.ico'} />
         <title>Bright Sight</title>
       </Head>
       <WalletConnectionProvider>
