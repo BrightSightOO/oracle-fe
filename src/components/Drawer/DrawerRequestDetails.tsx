@@ -231,7 +231,7 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
       <HStack w='full' justifyContent='space-between'>
         <HStack>
           <Text textStyle='Body' color={black}>
-            Challenge period ends
+            Dispute period ends
           </Text>
           <Tooltip
             p='20px'
