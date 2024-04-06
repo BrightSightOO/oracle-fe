@@ -20,8 +20,8 @@ export default function Home() {
         <title>Optimistic Oracle</title>
       </Head>
       <Flex mx='auto' flexDir='column' w='100%' h='100vh' bg={backgroundMain}>
-        <PageHeader headerText='Propose answers to 925 requests'>
-          <Flex
+        <PageHeader headerText='Propose data, earn rewards!'>
+          {/* <Flex
             justifyContent='space-between'
             flexDir={{ base: 'column', md2: 'row' }}
             w='full'
@@ -57,7 +57,7 @@ export default function Home() {
                 </HStack>
               );
             })}
-          </Flex>
+          </Flex> */}
         </PageHeader>
         {/* <Flex w='full' bg={white}>
         <Flex mx='auto' px='16px' maxW='1144px' minW='343px' w='full'>
