@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MainColorSet } from '@/theme/types';
 import { iOracle } from '@/types/table';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -103,6 +103,20 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
     return <></>;
   };
 
+  const isWithinExpiryWindow = useMemo(
+    () =>
+      Boolean(
+        data.expirationTime && Date.now() / 1000 < Number(data.expirationTime),
+      ),
+    [data.expirationTime],
+  );
+
+  const isResolveEnabled = useMemo(() => {
+    return Boolean(
+      data.state === RequestState.Asserted && !isWithinExpiryWindow,
+    );
+  }, [data.state, data.expirationTime]);
+
   return (
     <VStack bg={background} alignItems='flex-start' px='28px' py='24px'>
       <ModalContainer isOpen={submitModal.isOpen} onClose={submitModal.onClose}>
@@ -131,9 +145,23 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
           })}
         </Select>
       ) : (
-        <HStack bg={white} w='full' minH='44px' px='16px' alignItems='center'>
-          <Text textStyle='H5'>Asserted outcome:</Text>
-          <Text textStyle='H4'>{data.assertedValue === 0n ? 'No' : 'Yes'}</Text>
+        <HStack
+          bg={white}
+          w='full'
+          minH='44px'
+          px='16px'
+          alignItems='center'
+          justifyContent='space-between'
+        >
+          <HStack>
+            <Text textStyle='H5'>Asserted outcome:</Text>
+            <Text textStyle='H4'>
+              {data.assertedValue === 0n ? 'No' : 'Yes'}
+            </Text>
+          </HStack>
+          {data.state === RequestState.Asserted && isWithinExpiryWindow ? (
+            <Button variant='secondaryAction'>Dispute outcome</Button>
+          ) : null}
         </HStack>
       )}
       {data.bond && (
@@ -232,10 +260,14 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
           <Button
             w='full'
             h='50px'
-            color={white}
-            bg={bluePrimary}
-            borderRadius='4px'
+            // color={white}
+            // bg={bluePrimary}
+            // borderRadius='4px'
+            variant='primaryAction'
             onClick={submitModal.onOpen}
+            isDisabled={
+              data.state === RequestState.Asserted && !isResolveEnabled
+            }
           >
             {data.state === RequestState.Requested
               ? 'Assert Outcome'

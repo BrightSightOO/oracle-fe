@@ -98,7 +98,9 @@ const ProposalTable = () => {
         asserter: assertAccount ? assertAccount.asserter : undefined,
         assertedValue: assertAccount ? assertAccount.assertedValue : undefined,
         disputedValue: assertAccount ? assertAccount.disputedValue : undefined,
-        resolvedTime: undefined,
+        disputer: assertAccount ? assertAccount.disputer : undefined,
+        resolvedTime: account.resolveTimestamp,
+        resolvedValue: account.value,
       });
     }
     return result;

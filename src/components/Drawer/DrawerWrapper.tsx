@@ -45,7 +45,7 @@ const DrawerWrapper = ({
   const [subData, setSubData] = useState<iOracle>();
   const [requestId, setRequestId] = useState<number>();
   const [assertId, setAssertId] = useState<number>();
-  const [disputeId, setDisputeId] = useState<number>();
+  const [votingId, setVotingId] = useState<number>();
 
   useEffect(() => {
     // Accounts are not expected to change after resolved
@@ -111,10 +111,10 @@ const DrawerWrapper = ({
     return () => {
       requestId && connection.removeAccountChangeListener(requestId);
       assertId && connection.removeAccountChangeListener(assertId);
-      disputeId && connection.removeAccountChangeListener(disputeId);
+      votingId && connection.removeAccountChangeListener(votingId);
       setRequestId(undefined);
       setAssertId(undefined);
-      setDisputeId(undefined);
+      setVotingId(undefined);
     };
   }, []);
 
