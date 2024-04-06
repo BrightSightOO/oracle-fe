@@ -11,13 +11,13 @@ import Header from '@/components/Navigation/Header';
 import { OracleProvider } from '@/context/OracleProvider';
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [favicon, setFavicon] = useState('/favicon-light.ico');
+  const [favicon, setFavicon] = useState('/favicon.ico');
 
   return (
     <ThemeContextProvider>
       <Head>
         <link rel='icon' href={favicon} />
-        <title>Optimistic Oracle</title>
+        <title>Bright Sight</title>
       </Head>
       <WalletConnectionProvider>
         <ReactQueryProvider>
