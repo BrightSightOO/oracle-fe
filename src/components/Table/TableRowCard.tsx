@@ -20,7 +20,7 @@ import { iOracle } from '@/types/table';
 import { MainColorSet } from '@/theme/types';
 import DrawerWrapper from '../Drawer/DrawerWrapper';
 import { formatLongDate } from '@/utils/time';
-import { amountToString } from '@metaplex-foundation/umi';
+import { displayAmount } from '@metaplex-foundation/umi';
 
 const TableData = chakra(Td, {
   baseStyle: {
@@ -109,14 +109,14 @@ const TableRowCard = ({
             return (
               <TableData key={idx} maxW={info.maxW || 'fit-content'}>
                 <HStack>
-                  <Image
+                  {/* <Image
                     width='16px'
                     height='16px'
                     src={'assets/common/usdc_logo.svg'}
-                  />
+                  /> */}
                   <Text>
                     {info.title in row
-                      ? amountToString(row[info.title], 3)
+                      ? displayAmount(row[info.title], 3)
                       : null}
                   </Text>
                 </HStack>

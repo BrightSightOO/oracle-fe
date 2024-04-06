@@ -35,7 +35,7 @@ const TableWrapper = ({
   }, [breakpoint]);
 
   return (
-    <TableContainer w='full' maxH='800px' overflowY='auto' css={customScroll}>
+    <TableContainer w='full' overflowY='auto' css={customScroll}>
       <Table variant={variant}>
         <Thead>
           <Tr>

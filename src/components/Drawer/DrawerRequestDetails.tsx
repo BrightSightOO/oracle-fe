@@ -16,7 +16,7 @@ import { MainColorSet } from '@/theme/types';
 import { iOracle } from '@/types/table';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useUmi } from '@/context/UmiProvider';
-import { amountToString, publicKey } from '@metaplex-foundation/umi';
+import { displayAmount, publicKey } from '@metaplex-foundation/umi';
 import { ModalContainer, ModalWrapper } from '../UI/Modal';
 import { assertRequest } from '@/program-sdks/oracle/scripts/assertRequest';
 import { expireAndResolveRequest } from '@/program-sdks/oracle/scripts/expireAndResolveRequest';
@@ -157,13 +157,13 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
             </Tooltip>
           </HStack>
           <HStack>
-            <Image
+            {/* <Image
               width='16px'
               height='16px'
               src={'assets/common/usdc_logo.svg'}
-            />
+            /> */}
             <Text textStyle='Body' color={black}>
-              {amountToString(data.bond, 3)}
+              {displayAmount(data.bond, 3)}
             </Text>
           </HStack>
         </HStack>
@@ -189,13 +189,13 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
             </Tooltip>
           </HStack>
           <HStack>
-            <Image
+            {/* <Image
               width='16px'
               height='16px'
               src={'assets/common/usdc_logo.svg'}
-            />
+            /> */}
             <Text textStyle='Body' color={black}>
-              {amountToString(data.reward, 3)}
+              {displayAmount(data.reward, 3)}
             </Text>
           </HStack>
         </HStack>

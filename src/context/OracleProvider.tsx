@@ -12,9 +12,11 @@ import {
 } from '@/program-sdks/oracle';
 import { getDescriptions } from '@/program-sdks/oracle/scripts/descriptions';
 import { ParimutuelMarketSchema } from '@/data/ipfs';
+import _ from 'lodash';
 
 type ContextProps = {
-  oracleRequestAccounts: Request[];
+  maxPages: number;
+  oracleRequestAccounts: Record<string, Request[]>;
   oracleAssertionAccounts: Record<string, Assertion>;
   descriptions: Record<string, ParimutuelMarketSchema>;
   fetchPage: ({
@@ -31,7 +33,8 @@ type ContextProps = {
 export type IOracleContext = ContextProps;
 
 const defaultValue: IOracleContext = {
-  oracleRequestAccounts: [],
+  maxPages: 1,
+  oracleRequestAccounts: {},
   oracleAssertionAccounts: {},
   descriptions: {},
   fetchPage: async () => 'unimplemented',
@@ -46,9 +49,9 @@ export const OracleProvider: FC<{
   const umi = useUmi();
 
   const [oracleRequestKeys, setOracleRequestKeys] = useState<PublicKey[]>([]);
-  const [oracleRequestAccounts, setOracleRequestAccounts] = useState<Request[]>(
-    [],
-  );
+  const [oracleRequestAccounts, setOracleRequestAccounts] = useState<
+    Record<string, Request[]>
+  >({});
   const [oracleAssertionAccounts, setOracleAssertionAccounts] = useState<
     Record<string, Assertion>
   >({});
@@ -106,8 +109,17 @@ export const OracleProvider: FC<{
       ...oldMap,
       ...newDescriptions,
     }));
+    setOracleRequestAccounts((pS) => {
+      const updated =
+        page in pS && pS[page].length
+          ? _.uniqBy([...pS[page], ...maybeRequests], 'publicKey')
+          : maybeRequests;
+      return {
+        ...pS,
+        [page]: updated,
+      };
+    });
 
-    setOracleRequestAccounts((pS) => [...pS, ...maybeRequests]);
     setOracleAssertionAccounts((pS) => ({
       ...pS,
       ...maybeAssertions.reduce((acc, cur) => {
@@ -120,6 +132,7 @@ export const OracleProvider: FC<{
   return (
     <OracleContext.Provider
       value={{
+        maxPages: Math.ceil(oracleRequestKeys.length / 10),
         oracleRequestAccounts,
         oracleAssertionAccounts,
         descriptions,
