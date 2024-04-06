@@ -7,7 +7,7 @@ import ProposalTable from '@/components/Proposals/ProposalTable';
 const CONTENT_COPY = [
   'Data consumers post reward bounties in return for data.',
   'Proposers can post a bond to answer a data request.',
-  'If a proposal goes unchallenged, the proposer receives the reward after liveness.',
+  'If a proposal goes unchallenged, the proposer receives the reward.',
 ];
 
 export default function Home() {

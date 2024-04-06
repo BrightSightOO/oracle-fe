@@ -6,7 +6,6 @@ import {
   Text,
   Tr,
   VStack,
-  Image,
   chakra,
   useDisclosure,
   useTheme,
@@ -14,7 +13,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleArrowRight,
-  faEarthAmericas,
+  faScaleBalanced,
 } from '@fortawesome/free-solid-svg-icons';
 import { iOracle } from '@/types/table';
 import { MainColorSet } from '@/theme/types';
@@ -52,7 +51,7 @@ const TableRowCard = ({
         <HStack alignItems='center'>
           <Flex mr='5px'>
             <FontAwesomeIcon
-              icon={faEarthAmericas}
+              icon={faScaleBalanced}
               width='40px'
               height='40px'
             />
