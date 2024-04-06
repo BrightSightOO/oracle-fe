@@ -6,8 +6,8 @@ import {
 } from '@metaplex-foundation/mpl-toolbox';
 import {
   Umi,
+  lamports,
   publicKey,
-  sol,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { NATIVE_MINT } from '@solana/spl-token';
@@ -22,7 +22,7 @@ export const assertRequest = async ({
 }: {
   umi: Umi;
   request: string;
-  bond: number;
+  bond: bigint;
   bondMint: string;
   outcome: 0n | 1n;
 }) => {
@@ -53,7 +53,7 @@ export const assertRequest = async ({
         .append(
           transferSol(umi, {
             destination: tokenAccount,
-            amount: sol(bond),
+            amount: lamports(bond),
           }),
         )
         .append(

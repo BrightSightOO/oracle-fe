@@ -11,20 +11,22 @@ import {
   useDisclosure,
   useTheme,
 } from '@chakra-ui/react';
-import ProposalDrawer from '../Proposals/ProposalDrawer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleArrowRight,
   faEarthAmericas,
 } from '@fortawesome/free-solid-svg-icons';
-import { OracleType } from '@/types/table';
+import { iOracle } from '@/types/table';
 import { MainColorSet } from '@/theme/types';
+import DrawerWrapper from '../Drawer/DrawerWrapper';
+import { formatLongDate } from '@/utils/time';
+import { amountToString } from '@metaplex-foundation/umi';
 
-const TableDataCardMobile = ({
+const TableRowCardMobile = ({
   row,
   bodyInfo,
 }: {
-  row: OracleType;
+  row: iOracle;
   bodyInfo: Record<string, string>[];
 }) => {
   const { colors } = useTheme();
@@ -32,7 +34,11 @@ const TableDataCardMobile = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const displayQueryData = (data: OracleType) => {
+  const displayQueryData = (data: iOracle) => {
+    const formattedDate = formatLongDate.format(
+      Number(data.requestedTime * 1000n),
+    );
+
     return (
       <VStack w='full'>
         <HStack w='full' justifyContent='space-between'>
@@ -71,7 +77,7 @@ const TableDataCardMobile = ({
             {data.chain}
           </Text>
           <Text textStyle='Body' fontSize='12px' color={textGrey}>
-            {data.dateCreated}
+            {formattedDate}
           </Text>
           <Divider orientation='vertical' bg={textGrey} />
         </HStack>
@@ -98,7 +104,7 @@ const TableDataCardMobile = ({
                 src={'assets/common/usdc_logo.svg'}
               />
               <Text>
-                {info.title in row ? row[info.title as keyof OracleType] : null}
+                {info.title in row ? amountToString(row[info.title], 3) : null}
               </Text>
             </HStack>
           </HStack>,
@@ -118,7 +124,10 @@ const TableDataCardMobile = ({
               noOfLines={2}
               maxW={info.maxW || 'fit-content'}
             >
-              {info.title in row ? row[info.title as keyof OracleType] : null}
+              {info.title in row
+                ? // @ts-ignore - w/o/e refactor row
+                  row[info.title]
+                : null}
             </Text>
           </HStack>,
         );
@@ -128,18 +137,20 @@ const TableDataCardMobile = ({
   };
 
   return (
-    <Tr cursor='pointer' onClick={onOpen}>
-      <ProposalDrawer data={row} isOpen={isOpen} onClose={onClose} />
-      <VStack w='full'>
-        <Td px='20px' py='20px' w='full' style={{ width: 'full' }}>
-          <>
-            <VStack w='full'>{renderTableData()}</VStack>
-          </>
-        </Td>
-        <Box w='full' h='10px' bg={background} />
-      </VStack>
-    </Tr>
+    <>
+      <DrawerWrapper data={row} isOpen={isOpen} onClose={onClose} />
+      <Tr cursor='pointer' onClick={onOpen}>
+        <VStack w='full'>
+          <Td px='20px' py='20px' w='full' style={{ width: 'full' }}>
+            <>
+              <VStack w='full'>{renderTableData()}</VStack>
+            </>
+          </Td>
+          <Box w='full' h='10px' bg={background} />
+        </VStack>
+      </Tr>
+    </>
   );
 };
 
-export default TableDataCardMobile;
+export default TableRowCardMobile;

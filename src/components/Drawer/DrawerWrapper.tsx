@@ -11,9 +11,8 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import { MainColorSet } from '@/theme/types';
-import { OracleType } from '@/types/table';
+import { iOracle } from '@/types/table';
 import DrawerRequestDetails from './DrawerRequestDetails';
-import { tableDataType } from '@/utils/table';
 import DrawerTimestamps from './DrawerTimestamps';
 import DrawerTextData from './DrawerTextData';
 import DrawerInformation from './DrawerInformation';
@@ -23,18 +22,12 @@ const DrawerWrapper = ({
   isOpen,
   onClose,
 }: {
-  data: OracleType;
+  data: iOracle;
   isOpen: boolean;
   onClose: () => void;
 }) => {
   const { colors } = useTheme();
   const { white, black } = colors as MainColorSet;
-
-  const dataType = tableDataType({
-    settled: data.settled,
-    requester: data.requester,
-    voteStatus: data.voteStatus,
-  });
 
   return (
     <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
@@ -55,10 +48,11 @@ const DrawerWrapper = ({
           </DrawerHeader>
         </HStack>
         <DrawerBody px='0'>
-          <DrawerRequestDetails data={data} dataType={dataType} />
+          <DrawerRequestDetails data={data} />
           <DrawerTimestamps
             requestedTime={data.requestedTime}
-            settledTime={data.settledTime}
+            expirationTime={data.expirationTime}
+            resolvedTime={data.resolvedTime}
           />
           <VStack pb='64px'>
             <DrawerTextData description={data.description} />

@@ -1,5 +1,5 @@
 import { MainColorSet } from '@/theme/types';
-import { OracleType } from '@/types/table';
+import { iOracle } from '@/types/table';
 import { Text, VStack, useTheme } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
@@ -29,7 +29,7 @@ const DrawerInfoText = ({
   );
 };
 
-const DrawerInformation = ({ data }: { data: OracleType }) => {
+const DrawerInformation = ({ data }: { data: iOracle }) => {
   const { colors } = useTheme();
   const { bluePrimary, black } = colors as MainColorSet;
 
@@ -39,7 +39,7 @@ const DrawerInformation = ({ data }: { data: OracleType }) => {
         More information
       </Text>
       <Text textStyle='Body' fontWeight='700' color={black} mt='16px'>
-        {data.type}
+        {data.oracleType}
       </Text>
       <Text
         textStyle='Body'
@@ -47,38 +47,15 @@ const DrawerInformation = ({ data }: { data: OracleType }) => {
         overflowWrap='break-word'
         w='full'
       >
-        {data.oracle}
+        {data.request}
       </Text>
-      {data.umip && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText color={black} fontWeight='700'>
-            UMIP
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.umip}</DrawerInfoText>
-        </VStack>
-      )}
-      {data.identifier && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText color={black} fontWeight='700' mt='16px'>
-            Identifier
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.identifier}</DrawerInfoText>
-        </VStack>
-      )}
-      {data.requester && (
+
+      {data.request && (
         <VStack alignItems='flex-start'>
           <DrawerInfoText fontWeight='700' color={black} mt='16px'>
             Requester
           </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.requester}</DrawerInfoText>
-        </VStack>
-      )}
-      {data.requestTxn && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Request Transaction
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.requestTxn}</DrawerInfoText>
+          <DrawerInfoText color={bluePrimary}>{data.request}</DrawerInfoText>
         </VStack>
       )}
       {data.asserter && (
@@ -89,27 +66,15 @@ const DrawerInformation = ({ data }: { data: OracleType }) => {
           <DrawerInfoText color={bluePrimary}>{data.asserter}</DrawerInfoText>
         </VStack>
       )}
-      {data.escalationManager && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Escalation Manager
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>
-            {data.escalationManager}
-          </DrawerInfoText>
-        </VStack>
-      )}
-      {data.callbackRecipient && (
+      {data.creator && (
         <VStack alignItems='flex-start'>
           <DrawerInfoText fontWeight='700' color={black} mt='16px'>
             Callback Recipient
           </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>
-            {data.callbackRecipient}
-          </DrawerInfoText>
+          <DrawerInfoText color={bluePrimary}>{data.creator}</DrawerInfoText>
         </VStack>
       )}
-      {data.caller && (
+      {/* {data.caller && (
         <VStack alignItems='flex-start'>
           <DrawerInfoText fontWeight='700' color={black} mt='16px'>
             Caller
@@ -146,7 +111,7 @@ const DrawerInformation = ({ data }: { data: OracleType }) => {
             {data.settlementTxn}
           </DrawerInfoText>
         </VStack>
-      )}
+      )} */}
     </VStack>
   );
 };

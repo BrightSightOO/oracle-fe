@@ -1,6 +1,5 @@
 import {
   Button,
-  Flex,
   HStack,
   Image,
   Select,
@@ -14,10 +13,10 @@ import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { MainColorSet } from '@/theme/types';
-import { OracleType, TableDataEnum } from '@/types/table';
+import { iOracle } from '@/types/table';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useUmi } from '@/context/UmiProvider';
-import { publicKey } from '@metaplex-foundation/umi';
+import { amountToString, publicKey } from '@metaplex-foundation/umi';
 import { ModalContainer, ModalWrapper } from '../UI/Modal';
 import { assertRequest } from '@/program-sdks/oracle/scripts/assertRequest';
 import { expireAndResolveRequest } from '@/program-sdks/oracle/scripts/expireAndResolveRequest';
@@ -25,14 +24,10 @@ import {
   deserializeResolver,
   getResolverGpaBuilder,
 } from '@/program-sdks/par-resolver';
+import { RequestState } from '@/program-sdks/oracle';
+import CountdownTimer from './CountdownTimer';
 
-const DrawerRequestDetails = ({
-  data,
-  dataType,
-}: {
-  data: OracleType;
-  dataType: TableDataEnum;
-}) => {
+const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
   const { colors } = useTheme();
   const { bluePrimary, white, black, background } = colors as MainColorSet;
 
@@ -40,15 +35,15 @@ const DrawerRequestDetails = ({
   const umi = useUmi();
 
   const [requestOption, setRequestOption] = useState('');
-  const assertModal = useDisclosure();
+  const submitModal = useDisclosure();
 
   const handleSubmitOutcome = async () => {
     try {
       return assertRequest({
         umi,
-        bond: data.bond,
+        bond: data.bond.basisPoints,
         bondMint: data.bondMint,
-        request: data.oracle,
+        request: data.request,
         outcome: requestOption === 'Yes' ? 1n : 0n,
       });
     } catch (e) {
@@ -59,7 +54,7 @@ const DrawerRequestDetails = ({
 
   const handleSubmitExpireAndResolve = async () => {
     try {
-      const requestPubkey = publicKey(data.oracle);
+      const requestPubkey = publicKey(data.request);
       const resolveAccountRaw = await getResolverGpaBuilder(umi)
         .whereField('request', requestPubkey)
         .get();
@@ -74,14 +69,14 @@ const DrawerRequestDetails = ({
       throw e;
     }
   };
-  console.log('requestOption', requestOption);
-  return (
-    <VStack bg={background} alignItems='flex-start' px='28px' py='24px'>
-      <ModalContainer isOpen={assertModal.isOpen} onClose={assertModal.onClose}>
+
+  const renderModalBody = (state: RequestState) => {
+    if (state === RequestState.Requested) {
+      return (
         <ModalWrapper
           header='Assert Outcome'
-          onClickMain={handleSubmitExpireAndResolve}
-          onClose={assertModal.onClose}
+          onClickMain={handleSubmitOutcome}
+          onClose={submitModal.onClose}
           buttonText='Confirm'
         >
           <VStack pt='8'>
@@ -89,11 +84,37 @@ const DrawerRequestDetails = ({
             <Text>{`Asserting: ${requestOption}`}</Text>
           </VStack>
         </ModalWrapper>
+      );
+    } else if (state === RequestState.Asserted) {
+      <ModalWrapper
+        header='Expire & Resolve'
+        onClickMain={handleSubmitExpireAndResolve}
+        onClose={submitModal.onClose}
+        buttonText='Confirm'
+      >
+        <VStack pt='8'>
+          <Text fontWeight='bold'>{data.title}</Text>
+          <Text>{`Expiring: ${requestOption}`}</Text>
+          <Text>{`Resolving: ${requestOption}`}</Text>
+        </VStack>
+      </ModalWrapper>;
+    }
+
+    return <></>;
+  };
+
+  return (
+    <VStack bg={background} alignItems='flex-start' px='28px' py='24px'>
+      <ModalContainer isOpen={submitModal.isOpen} onClose={submitModal.onClose}>
+        {renderModalBody(data.state)}
       </ModalContainer>
       <Text textStyle='H5' fontWeight='700'>
         Request (price)
       </Text>
-      {data.request && !data.settled && (
+      {data.requestOutcome &&
+      // Selecting outcome should be availible when submiting request or voting in dispute
+      (data.state == RequestState.Requested ||
+        data.state == RequestState.Disputed) ? (
         <Select
           placeholder='Select option'
           bg={white}
@@ -101,7 +122,7 @@ const DrawerRequestDetails = ({
           value={requestOption}
           onChange={(e) => setRequestOption(e.currentTarget.value)}
         >
-          {data.request.map((option, idx) => {
+          {data.requestOutcome.map((option, idx) => {
             return (
               <option key={idx} value={option}>
                 {option}
@@ -109,13 +130,12 @@ const DrawerRequestDetails = ({
             );
           })}
         </Select>
+      ) : (
+        <HStack bg={white} w='full' minH='44px' px='16px' alignItems='center'>
+          <Text textStyle='H5'>Asserted outcome:</Text>
+          <Text textStyle='H4'>{data.assertedValue === 0n ? 'No' : 'Yes'}</Text>
+        </HStack>
       )}
-      {data.settled && (
-        <Flex bg={white} w='full' minH='44px' px='16px' alignItems='center'>
-          <Text textStyle='H5'>{data.settled}</Text>
-        </Flex>
-      )}
-
       {data.bond && (
         <HStack w='full' justifyContent='space-between'>
           <HStack>
@@ -143,7 +163,7 @@ const DrawerRequestDetails = ({
               src={'assets/common/usdc_logo.svg'}
             />
             <Text textStyle='Body' color={black}>
-              {data.bond}
+              {amountToString(data.bond, 3)}
             </Text>
           </HStack>
         </HStack>
@@ -175,7 +195,7 @@ const DrawerRequestDetails = ({
               src={'assets/common/usdc_logo.svg'}
             />
             <Text textStyle='Body' color={black}>
-              {data.reward}
+              {amountToString(data.reward, 3)}
             </Text>
           </HStack>
         </HStack>
@@ -199,8 +219,15 @@ const DrawerRequestDetails = ({
             />
           </Tooltip>
         </HStack>
+        <HStack>
+          {data.expirationTime ? (
+            <CountdownTimer endTs={Number(data.expirationTime)} />
+          ) : (
+            '--'
+          )}
+        </HStack>
       </HStack>
-      {dataType === TableDataEnum.Proposal ? (
+      {data.state !== RequestState.Resolved ? (
         wallet.connected ? (
           <Button
             w='full'
@@ -208,9 +235,13 @@ const DrawerRequestDetails = ({
             color={white}
             bg={bluePrimary}
             borderRadius='4px'
-            onClick={assertModal.onOpen}
+            onClick={submitModal.onOpen}
           >
-            Submit Outcome
+            {data.state === RequestState.Requested
+              ? 'Assert Outcome'
+              : data.state === RequestState.Asserted
+              ? 'Resolve Request'
+              : 'Challenge Result'}
           </Button>
         ) : (
           <Button

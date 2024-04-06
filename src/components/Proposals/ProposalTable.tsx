@@ -2,8 +2,9 @@ import { VStack } from '@chakra-ui/react';
 import TableWrapper from '../Table/TableWrapper';
 import { useEffect, useMemo, useState } from 'react';
 import { useOracle } from '@/context/OracleProvider';
-import { OracleType } from '@/types/table';
-import { getClusterConstant } from '@/constants';
+import { iOracle } from '@/types/table';
+import { getClusterConstants } from '@/constants';
+import { createAmount } from '@metaplex-foundation/umi';
 
 const headerInfo = [
   { title: 'Query', maxW: '634px' },
@@ -14,7 +15,7 @@ const headerInfo = [
 ];
 const bodyInfo = [
   { title: 'title', maxW: '634px' },
-  { title: 'type', maxW: '211px' },
+  { title: 'oracleType', maxW: '211px' },
   { title: 'bond', maxW: '111px' },
   { title: 'reward', maxW: '108px' },
   { title: '', maxW: '70px' },
@@ -22,19 +23,27 @@ const bodyInfo = [
 
 const ProposalTable = () => {
   const [page, setPage] = useState(1);
-  const { oracleRequestAccounts, descriptions, fetchPage } = useOracle();
+  const {
+    oracleRequestAccounts,
+    oracleAssertionAccounts,
+    descriptions,
+    fetchPage,
+  } = useOracle();
 
   useEffect(() => {
-    fetchPage({ page, perPage: 20, reload: false });
+    fetchPage({ page, perPage: 10, reload: false });
   }, []);
 
   const proposalData = useMemo(() => {
-    const MINT_PUBKEY_TO_DECIMAL = getClusterConstant('MINT_PUBKEY_TO_DECIMAL');
+    const { MINT_PUBKEY_TO_DECIMAL, MINT_PUBKEY_TO_NAME } = getClusterConstants(
+      'MINT_PUBKEY_TO_DECIMAL',
+      'MINT_PUBKEY_TO_NAME',
+    );
     const currentRequestAccounts = oracleRequestAccounts.slice(page, 10 * page);
-    const result: OracleType[] = [];
+    const result: iOracle[] = [];
     for (const account of currentRequestAccounts) {
-      console.log('ACCOUNT', account);
       const info = descriptions[account.publicKey];
+      const assertAccount = oracleAssertionAccounts[account.publicKey];
       const bondMint = account.bondMint;
       const rewardMint = account.rewardMint;
       const bondDecimals =
@@ -45,43 +54,41 @@ const ProposalTable = () => {
         rewardMint in MINT_PUBKEY_TO_DECIMAL
           ? MINT_PUBKEY_TO_DECIMAL[rewardMint]
           : 0;
+      const rewardMintName =
+        rewardMint in MINT_PUBKEY_TO_NAME
+          ? MINT_PUBKEY_TO_NAME[rewardMint]
+          : '';
+      const bondMintName =
+        bondMint in MINT_PUBKEY_TO_NAME ? MINT_PUBKEY_TO_NAME[bondMint] : '';
 
       result.push({
         title: info.title,
-        chain: 'Solana',
-        dateCreated: new Date(
-          (account.resolveTimestamp * 1000n).toString(),
-        ).toString(),
-        type: 'Parimutuel Markets',
         description: info.description,
-        oracle: account.publicKey,
-        requestedTime: new Date(
-          (account.assertionTimestamp * 1000n).toString(),
-        ).toString(),
-        settledTime: undefined,
-        bond: Number(account.bond) / Math.pow(10, bondDecimals),
+        chain: 'Solana',
+        oracleType: 'Parimutuel Markets',
+        requestedTime: account.assertionTimestamp,
+        assertedTime: assertAccount
+          ? assertAccount.assertionTimestamp
+          : undefined,
+        expirationTime: assertAccount
+          ? assertAccount.expirationTimestamp
+          : undefined,
+        request: account.publicKey,
+        bond: createAmount(account.bond, bondMintName, bondDecimals),
         bondMint: bondMint,
-        reward: Number(account.reward) / Math.pow(10, rewardDecimals),
-        request: ['Yes', 'No'],
-        umip: undefined,
-        identifier: undefined,
-        requester: account.creator,
-        requestTxn: undefined,
-        settled: null,
-        asserter: undefined,
-        escalationManager: undefined,
-        callbackRecipient: undefined,
-        caller: undefined,
-        assertionTxn: undefined,
-        settlementRecipient: undefined,
-        settlementTxn: undefined,
-        voteStatus: undefined,
+        reward: createAmount(account.reward, rewardMintName, rewardDecimals),
+        requestOutcome: ['Yes', 'No'],
+        creator: account.creator,
+        state: account.state,
+        asserter: assertAccount ? assertAccount.asserter : undefined,
+        assertedValue: assertAccount ? assertAccount.assertedValue : undefined,
+        disputedValue: assertAccount ? assertAccount.disputedValue : undefined,
+        resolvedTime: undefined,
       });
     }
     return result;
   }, [oracleRequestAccounts, page]);
 
-  console.log('oracleRequestAccounts', oracleRequestAccounts);
   return (
     <VStack w='full' pt='20px' px='8px'>
       <TableWrapper
