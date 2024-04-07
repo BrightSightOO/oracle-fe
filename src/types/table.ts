@@ -20,7 +20,7 @@ export interface iOracle {
   expirationTime: bigint | undefined;
   asserter: PublicKey | undefined;
   disputer: PublicKey | undefined;
-  // No 0n, Yes 1n or undefined if assert account does not exist
+  // No 0n, Yes 1n, Invalid 2n, or undefined if assert account does not exist
   assertedValue: bigint | undefined;
   disputedValue: bigint | undefined;
   resolvedTime: bigint | undefined;

@@ -6,9 +6,7 @@ import {
   Td,
   Text,
   Tr,
-  Image,
   VStack,
-  useDisclosure,
   useTheme,
 } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,21 +16,20 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { iOracle } from '@/types/table';
 import { MainColorSet } from '@/theme/types';
-import DrawerWrapper from '../Drawer/DrawerWrapper';
 import { formatLongDate } from '@/utils/time';
 import { displayAmount } from '@metaplex-foundation/umi';
 
 const TableRowCardMobile = ({
   row,
   bodyInfo,
+  onDrawerOpen,
 }: {
   row: iOracle;
   bodyInfo: Record<string, string>[];
+  onDrawerOpen: () => void;
 }) => {
   const { colors } = useTheme();
   const { textGrey, black, bluePrimary, background } = colors as MainColorSet;
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const displayQueryData = (data: iOracle) => {
     const formattedDate = formatLongDate.format(
@@ -140,8 +137,7 @@ const TableRowCardMobile = ({
 
   return (
     <>
-      <DrawerWrapper data={row} isOpen={isOpen} onClose={onClose} />
-      <Tr cursor='pointer' onClick={onOpen}>
+      <Tr cursor='pointer' onClick={onDrawerOpen}>
         <VStack w='full'>
           <Td px='20px' py='20px' w='full' style={{ width: 'full' }}>
             <>

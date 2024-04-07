@@ -26,6 +26,12 @@ import {
 import { RequestState } from '@/program-sdks/oracle';
 import CountdownTimer from './CountdownTimer';
 
+const REQUEST_OPTIONS = {
+  Yes: 1n,
+  No: 0n,
+  Invalid: 2n,
+} as const;
+
 const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
   const { colors } = useTheme();
   const { bluePrimary, white, black, background } = colors as MainColorSet;
@@ -33,17 +39,21 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
   const wallet = useWallet();
   const umi = useUmi();
 
-  const [requestOption, setRequestOption] = useState('');
+  const [requestOption, setRequestOption] =
+    useState<keyof typeof REQUEST_OPTIONS>();
   const submitModal = useDisclosure();
 
   const handleSubmitOutcome = async () => {
+    if (!requestOption) {
+      return;
+    }
     try {
       return assertRequest({
         umi,
         bond: data.bond.basisPoints,
         bondMint: data.bondMint,
         request: data.request,
-        outcome: requestOption === 'Yes' ? 1n : 0n,
+        outcome: REQUEST_OPTIONS[requestOption],
       });
     } catch (e) {
       console.log('ERROR', e);
@@ -114,7 +124,11 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
   }, [data.expirationTime, data.resolvedTime]);
 
   const isAssertEnabled = useMemo(() => {
-    return Boolean(data.state === RequestState.Requested && isAfterRequestTime);
+    return Boolean(
+      data.state === RequestState.Requested &&
+        isAfterRequestTime &&
+        requestOption,
+    );
   }, [data.state, data.expirationTime]);
 
   const isResolveEnabled = useMemo(() => {
@@ -133,14 +147,18 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
       </Text>
       {data.requestOutcome &&
       // Selecting outcome should be availible when submiting request or voting in dispute
-      (data.state == RequestState.Requested ||
-        data.state == RequestState.Disputed) ? (
+      (data.state === RequestState.Requested ||
+        data.state === RequestState.Disputed) ? (
         <Select
           placeholder='Select option'
           bg={white}
           my='10px'
           value={requestOption}
-          onChange={(e) => setRequestOption(e.currentTarget.value)}
+          onChange={(e) =>
+            setRequestOption(
+              e.currentTarget.value as keyof typeof REQUEST_OPTIONS,
+            )
+          }
         >
           {data.requestOutcome.map((option, idx) => {
             return (

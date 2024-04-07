@@ -92,7 +92,7 @@ const ProposalTable = () => {
         bond: createAmount(account.bond, bondMintName, bondDecimals),
         bondMint: bondMint,
         reward: createAmount(account.reward, rewardMintName, rewardDecimals),
-        requestOutcome: ['Yes', 'No'],
+        requestOutcome: ['Yes', 'No', 'Invalid'],
         creator: account.creator,
         state: account.state,
         asserter: assertAccount ? assertAccount.asserter : undefined,

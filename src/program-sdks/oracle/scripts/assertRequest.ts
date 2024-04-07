@@ -24,7 +24,7 @@ export const assertRequest = async ({
   request: string;
   bond: bigint;
   bondMint: string;
-  outcome: 0n | 1n;
+  outcome: 0n | 1n | 2n;
 }) => {
   try {
     const mint = publicKey(bondMint);
