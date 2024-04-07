@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BoxProps, HStack, Text, VStack } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
 import {
   DAYS_SECONDS,
   HOURS_SECONDS,

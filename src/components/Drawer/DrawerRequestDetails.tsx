@@ -25,6 +25,7 @@ import {
 } from '@/program-sdks/par-resolver';
 import { RequestState } from '@/program-sdks/oracle';
 import CountdownTimer from './CountdownTimer';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
 const REQUEST_OPTIONS = {
   Yes: 1n,
@@ -38,6 +39,7 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
 
   const wallet = useWallet();
   const umi = useUmi();
+  const { setVisible } = useWalletModal();
 
   const [requestOption, setRequestOption] =
     useState<keyof typeof REQUEST_OPTIONS>();
@@ -304,7 +306,7 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
             color={white}
             bg={bluePrimary}
             borderRadius='4px'
-            onClick={wallet.connect}
+            onClick={() => setVisible(true)}
           >
             Connect wallet
           </Button>

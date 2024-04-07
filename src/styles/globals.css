@@ -14,3 +14,8 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+/* Overwrite value 1040 as below chakra drawer component */
+.wallet-adapter-modal {
+  z-index: 1800;
+}
