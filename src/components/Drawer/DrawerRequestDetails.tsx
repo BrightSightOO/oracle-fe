@@ -1,7 +1,6 @@
 import {
   Button,
   HStack,
-  Image,
   Select,
   Text,
   Tooltip,
@@ -106,13 +105,17 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
     return <></>;
   };
 
-  const isWithinExpiryWindow = useMemo(
-    () =>
-      Boolean(
-        data.expirationTime && Date.now() / 1000 < Number(data.expirationTime),
-      ),
-    [data.expirationTime],
-  );
+  const [isAfterRequestTime, isWithinExpiryWindow] = useMemo(() => {
+    const now = Date.now() / 1000;
+    return [
+      now > Number(data.resolvedTime),
+      Boolean(data.expirationTime && now < Number(data.expirationTime)),
+    ];
+  }, [data.expirationTime, data.resolvedTime]);
+
+  const isAssertEnabled = useMemo(() => {
+    return Boolean(data.state === RequestState.Requested && isAfterRequestTime);
+  }, [data.state, data.expirationTime]);
 
   const isResolveEnabled = useMemo(() => {
     return Boolean(
@@ -263,13 +266,11 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
           <Button
             w='full'
             h='50px'
-            // color={white}
-            // bg={bluePrimary}
-            // borderRadius='4px'
             variant='primaryAction'
             onClick={submitModal.onOpen}
             isDisabled={
-              data.state === RequestState.Asserted && !isResolveEnabled
+              (data.state === RequestState.Asserted && !isResolveEnabled) ||
+              (data.state === RequestState.Requested && !isAssertEnabled)
             }
           >
             {data.state === RequestState.Requested
