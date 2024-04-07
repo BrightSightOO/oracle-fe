@@ -86,18 +86,21 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
         </ModalWrapper>
       );
     } else if (state === RequestState.Asserted) {
-      <ModalWrapper
-        header='Expire & Resolve'
-        onClickMain={handleSubmitExpireAndResolve}
-        onClose={submitModal.onClose}
-        buttonText='Confirm'
-      >
-        <VStack pt='8'>
-          <Text fontWeight='bold'>{data.title}</Text>
-          <Text>{`Expiring: ${requestOption}`}</Text>
-          <Text>{`Resolving: ${requestOption}`}</Text>
-        </VStack>
-      </ModalWrapper>;
+      return (
+        <ModalWrapper
+          header='Expire & Resolve'
+          onClickMain={handleSubmitExpireAndResolve}
+          onClose={submitModal.onClose}
+          buttonText='Confirm'
+        >
+          <VStack pt='8'>
+            <Text fontWeight='bold'>{data.title}</Text>
+            <Text>{`Resolving to: ${
+              data.assertedValue === 1n ? 'Yes' : 'No'
+            }`}</Text>
+          </VStack>
+        </ModalWrapper>
+      );
     }
 
     return <></>;
@@ -248,10 +251,10 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
           </Tooltip>
         </HStack>
         <HStack>
-          {data.expirationTime ? (
+          {isWithinExpiryWindow ? (
             <CountdownTimer endTs={Number(data.expirationTime)} />
           ) : (
-            '--'
+            <Text>--</Text>
           )}
         </HStack>
       </HStack>
