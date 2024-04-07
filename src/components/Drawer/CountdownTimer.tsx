@@ -30,12 +30,12 @@ function countdownTime(timestamp: number) {
   return [days, padTime(hours), padTime(minutes), padTime(seconds)];
 }
 
-interface RaffleCardCountdown {
+interface CountdownTimerProps {
   endTs: number;
 }
 const caption = ['days', 'hrs', 'mins', 'secs'];
 
-export default function RaffleCardCountdown({ endTs }: RaffleCardCountdown) {
+export default function CountdownTimer({ endTs }: CountdownTimerProps) {
   const [countdown, setCountdown] = useState<(number | string)[]>([0, 0, 0, 0]);
 
   useEffect(() => {
