@@ -4,10 +4,11 @@ import Head from 'next/head';
 import { Box, Flex } from '@chakra-ui/react';
 import WalletConnectionProvider from '@/context/WalletConnectionProvider';
 import { ReactQueryProvider } from '@/context/ReactQueryProvider';
-import '@/styles/fonts.css';
-import '../styles/globals.css';
 import Header from '@/components/Navigation/Header';
 import { OracleProvider } from '@/context/OracleProvider';
+
+import '@/styles/fonts.css';
+import '@/styles/globals.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
