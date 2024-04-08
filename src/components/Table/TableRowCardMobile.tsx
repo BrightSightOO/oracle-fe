@@ -136,18 +136,16 @@ const TableRowCardMobile = ({
   };
 
   return (
-    <>
-      <Tr cursor='pointer' onClick={onDrawerOpen}>
-        <VStack w='full'>
-          <Td px='20px' py='20px' w='full' style={{ width: 'full' }}>
-            <>
-              <VStack w='full'>{renderTableData()}</VStack>
-            </>
-          </Td>
-          <Box w='full' h='10px' bg={background} />
-        </VStack>
-      </Tr>
-    </>
+    <Tr cursor='pointer' onClick={onDrawerOpen}>
+      <VStack w='full'>
+        <Td px='20px' py='20px' w='full' style={{ width: 'full' }}>
+          <>
+            <VStack w='full'>{renderTableData()}</VStack>
+          </>
+        </Td>
+        <Box w='full' h='10px' bg={background} />
+      </VStack>
+    </Tr>
   );
 };
 

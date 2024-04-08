@@ -103,16 +103,9 @@ const TableRowCard = ({
         if (info.title === 'bond' || info.title === 'reward') {
           return (
             <TableData key={idx} maxW={info.maxW || 'fit-content'}>
-              <HStack>
-                {/* <Image
-                    width='16px'
-                    height='16px'
-                    src={'assets/common/usdc_logo.svg'}
-                  /> */}
-                <Text>
-                  {info.title in row ? displayAmount(row[info.title], 3) : null}
-                </Text>
-              </HStack>
+              <Text>
+                {info.title in row ? displayAmount(row[info.title], 3) : null}
+              </Text>
             </TableData>
           );
         }
