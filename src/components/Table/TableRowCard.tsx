@@ -7,18 +7,17 @@ import {
   Tr,
   VStack,
   chakra,
-  useDisclosure,
   useTheme,
 } from '@chakra-ui/react';
-import ProposalDrawer from '../Proposals/ProposalDrawer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleArrowRight,
-  faEarthAmericas,
+  faScaleBalanced,
 } from '@fortawesome/free-solid-svg-icons';
-import USDCLogo from '../Svg/USDCLogo';
-import { OracleType } from '@/types/tableData';
+import { iOracle } from '@/types/table';
 import { MainColorSet } from '@/theme/types';
+import { formatLongDate } from '@/utils/time';
+import { displayAmount } from '@metaplex-foundation/umi';
 
 const TableData = chakra(Td, {
   baseStyle: {
@@ -29,25 +28,28 @@ const TableData = chakra(Td, {
   },
 });
 
-const TableDataCard = ({
+const TableRowCard = ({
   row,
   bodyInfo,
+  onDrawerOpen,
 }: {
-  row: OracleType;
+  row: iOracle;
   bodyInfo: Record<string, string>[];
+  onDrawerOpen: () => void;
 }) => {
   const { colors } = useTheme();
   const { textGrey, black, bluePrimary } = colors as MainColorSet;
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const displayQueryData = (data: OracleType, idx: number) => {
+  const displayQueryData = (data: iOracle, idx: number) => {
+    const formattedDate = formatLongDate.format(
+      Number(data.requestedTime * 1000n),
+    );
     return (
       <TableData key={idx} maxW='634px'>
         <HStack alignItems='center'>
           <Flex mr='5px'>
             <FontAwesomeIcon
-              icon={faEarthAmericas}
+              icon={faScaleBalanced}
               width='40px'
               height='40px'
             />
@@ -69,7 +71,7 @@ const TableDataCard = ({
                 {data.chain}
               </Text>
               <Text textStyle='Body' fontSize='12px' color={textGrey}>
-                {data.dateCreated}
+                {formattedDate}
               </Text>
               <Divider orientation='vertical' bg={textGrey} />
             </HStack>
@@ -78,9 +80,9 @@ const TableDataCard = ({
       </TableData>
     );
   };
+
   return (
-    <Tr cursor='pointer' onClick={onOpen}>
-      <ProposalDrawer data={row} isOpen={isOpen} onClose={onClose} />
+    <Tr cursor='pointer' onClick={onDrawerOpen}>
       {bodyInfo.map((info, idx) => {
         if (info.title === '') {
           return (
@@ -101,16 +103,15 @@ const TableDataCard = ({
         if (info.title === 'bond' || info.title === 'reward') {
           return (
             <TableData key={idx} maxW={info.maxW || 'fit-content'}>
-              <HStack>
-                <USDCLogo width='16px' height='16px' />
-                <Text>{info.title in row ? row[info.title] : null}</Text>
-              </HStack>
+              <Text>
+                {info.title in row ? displayAmount(row[info.title], 3) : null}
+              </Text>
             </TableData>
           );
         }
 
         if (info.title === 'title') {
-          return displayQueryData(row as OracleType, idx);
+          return displayQueryData(row as iOracle, idx);
         }
         return (
           <TableData key={idx} style={{ maxWidth: info.maxW || 'fit-content' }}>
@@ -121,7 +122,10 @@ const TableDataCard = ({
               noOfLines={2}
               maxW={info.maxW || 'fit-content'}
             >
-              {info.title in row ? row[info.title as keyof OracleType] : null}
+              {info.title in row
+                ? // @ts-ignore - w/o/e refactor row
+                  row[info.title]
+                : null}
             </Text>
           </TableData>
         );
@@ -130,4 +134,4 @@ const TableDataCard = ({
   );
 };
 
-export default TableDataCard;
+export default TableRowCard;

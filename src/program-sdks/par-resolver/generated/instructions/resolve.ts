@@ -77,7 +77,7 @@ export function resolve(
     },
     market: {
       index: 1,
-      isWritable: false as boolean,
+      isWritable: true as boolean,
       value: input.market ?? null,
     },
     request: {

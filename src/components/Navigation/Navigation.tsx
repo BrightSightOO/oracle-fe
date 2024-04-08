@@ -19,15 +19,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 export enum NAVIGATION_OPTIONS {
-  VERIFY = '/verify',
-  PROPOSE = '/propose',
+  VOTE = '/vote',
+  PROPOSE = '/',
   SETTLED = '/settled',
 }
 
 const NAV_NAME_MAP = {
-  [NAVIGATION_OPTIONS.VERIFY]: 'Verify',
-  [NAVIGATION_OPTIONS.PROPOSE]: 'Propose',
-  [NAVIGATION_OPTIONS.SETTLED]: 'Settled',
+  // [NAVIGATION_OPTIONS.VOTE]: 'Vote',
+  // [NAVIGATION_OPTIONS.PROPOSE]: 'Propose',
+  // [NAVIGATION_OPTIONS.SETTLED]: 'Settled',
 };
 
 const Navigation = () => {
@@ -44,7 +44,7 @@ const Navigation = () => {
   const WalletMultiButtonDynamic = dynamic(
     async () =>
       (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
-    { ssr: false }
+    { ssr: false },
   );
 
   return (
@@ -56,7 +56,7 @@ const Navigation = () => {
       zIndex={100}
     >
       <Show above='md'>
-        <HStack spacing='5'>
+        {/* <HStack spacing='5'>
           {Object.values(NAVIGATION_OPTIONS).map((navOpt) => {
             let color = activeTab === navOpt ? white : textGrey;
             const navTitle = NAV_NAME_MAP[navOpt];
@@ -77,7 +77,7 @@ const Navigation = () => {
               </NavLink>
             );
           })}
-        </HStack>
+        </HStack> */}
       </Show>
       <Show below='md'>
         <Menu>
@@ -91,7 +91,7 @@ const Navigation = () => {
             icon={<FontAwesomeIcon icon={faBars} color={white} />}
           />
           <MenuList zIndex={2}>
-            {Object.values(NAVIGATION_OPTIONS).map((navOpt) => {
+            {/* {Object.values(NAVIGATION_OPTIONS).map((navOpt) => {
               let color = activeTab === navOpt ? bluePrimary : black;
               const navTitle = NAV_NAME_MAP[navOpt];
 
@@ -112,7 +112,7 @@ const Navigation = () => {
                   </MenuItem>
                 </NavLink>
               );
-            })}
+            })} */}
             <Flex mt={2} justifyContent='center' minW='190px'>
               <WalletMultiButtonDynamic />
             </Flex>

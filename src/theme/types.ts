@@ -1,6 +1,7 @@
 export type MainColorSet = {
   white: string;
   black: string;
+  black200: string;
   bluePrimary: string;
   backgroundMain: string;
   strokeGrey: string;

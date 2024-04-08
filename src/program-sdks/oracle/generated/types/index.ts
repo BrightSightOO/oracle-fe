@@ -10,6 +10,7 @@ export * from "./accountType";
 export * from "./createAssertionArgs";
 export * from "./createOracleArgs";
 export * from "./createRequestArgs";
+export * from "./disputeAssertionArgs";
 export * from "./expireAssertionArgs";
 export * from "./requestData";
 export * from "./requestState";
