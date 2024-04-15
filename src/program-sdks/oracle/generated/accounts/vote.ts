@@ -34,92 +34,89 @@ import {
 
 import { AccountType, getAccountTypeSerializer } from "../types";
 
-export type Stake = Account<StakeAccountData>;
+export type Vote = Account<VoteAccountData>;
 
-export type StakeAccountData = {
+export type VoteAccountData = {
   accountType: AccountType;
-  owner: PublicKey;
-  delegate: PublicKey;
-  amount: bigint;
+  stake: PublicKey;
+  value: bigint;
+  votes: bigint;
 };
 
-export type StakeAccountDataArgs = {
-  owner: PublicKey;
-  delegate: PublicKey;
-  amount: number | bigint;
+export type VoteAccountDataArgs = {
+  stake: PublicKey;
+  value: number | bigint;
+  votes: number | bigint;
 };
 
-export function getStakeAccountDataSerializer(): Serializer<
-  StakeAccountDataArgs,
-  StakeAccountData
-> {
-  return mapSerializer<StakeAccountDataArgs, any, StakeAccountData>(
-    struct<StakeAccountData>(
+export function getVoteAccountDataSerializer(): Serializer<VoteAccountDataArgs, VoteAccountData> {
+  return mapSerializer<VoteAccountDataArgs, any, VoteAccountData>(
+    struct<VoteAccountData>(
       [
         ["accountType", getAccountTypeSerializer()],
-        ["owner", publicKeySerializer()],
-        ["delegate", publicKeySerializer()],
-        ["amount", u64()],
+        ["stake", publicKeySerializer()],
+        ["value", u64()],
+        ["votes", u64()],
       ],
-      { description: "StakeAccountData" },
+      { description: "VoteAccountData" },
     ),
-    (value) => ({ ...value, accountType: AccountType.Stake }),
+    (value) => ({ ...value, accountType: AccountType.Vote }),
   );
 }
 
-export function deserializeStake(rawAccount: RpcAccount): Stake {
-  return deserializeAccount(rawAccount, getStakeAccountDataSerializer());
+export function deserializeVote(rawAccount: RpcAccount): Vote {
+  return deserializeAccount(rawAccount, getVoteAccountDataSerializer());
 }
 
-export async function fetchStake(
+export async function fetchVote(
   context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
-): Promise<Stake> {
+): Promise<Vote> {
   const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
-  assertAccountExists(maybeAccount, "Stake");
-  return deserializeStake(maybeAccount);
+  assertAccountExists(maybeAccount, "Vote");
+  return deserializeVote(maybeAccount);
 }
 
-export async function safeFetchStake(
+export async function safeFetchVote(
   context: Pick<Context, "rpc">,
   publicKey: PublicKey | Pda,
   options?: RpcGetAccountOptions,
-): Promise<Stake | null> {
+): Promise<Vote | null> {
   const maybeAccount = await context.rpc.getAccount(toPublicKey(publicKey, false), options);
-  return maybeAccount.exists ? deserializeStake(maybeAccount) : null;
+  return maybeAccount.exists ? deserializeVote(maybeAccount) : null;
 }
 
-export async function fetchAllStake(
+export async function fetchAllVote(
   context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions,
-): Promise<Array<Stake>> {
+): Promise<Array<Vote>> {
   const maybeAccounts = await context.rpc.getAccounts(
     publicKeys.map((key) => toPublicKey(key, false)),
     options,
   );
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, "Stake");
-    return deserializeStake(maybeAccount);
+    assertAccountExists(maybeAccount, "Vote");
+    return deserializeVote(maybeAccount);
   });
 }
 
-export async function safeFetchAllStake(
+export async function safeFetchAllVote(
   context: Pick<Context, "rpc">,
   publicKeys: Array<PublicKey | Pda>,
   options?: RpcGetAccountsOptions,
-): Promise<Array<Stake>> {
+): Promise<Array<Vote>> {
   const maybeAccounts = await context.rpc.getAccounts(
     publicKeys.map((key) => toPublicKey(key, false)),
     options,
   );
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserializeStake(maybeAccount as RpcAccount));
+    .map((maybeAccount) => deserializeVote(maybeAccount as RpcAccount));
 }
 
-export function getStakeGpaBuilder(context: Pick<Context, "rpc" | "programs">) {
+export function getVoteGpaBuilder(context: Pick<Context, "rpc" | "programs">) {
   const programId = context.programs.getPublicKey(
     "optimisticOracle",
     "DVMysqEbKDZdaJ1AVcmAqyVfvvZAMFwUkEQsNMQTvMZg",
@@ -127,28 +124,30 @@ export function getStakeGpaBuilder(context: Pick<Context, "rpc" | "programs">) {
   return gpaBuilder(context, programId)
     .registerFields<{
       accountType: AccountTypeArgs;
-      owner: PublicKey;
-      delegate: PublicKey;
-      amount: number | bigint;
+      stake: PublicKey;
+      value: number | bigint;
+      votes: number | bigint;
     }>({
       accountType: [0, getAccountTypeSerializer()],
-      owner: [1, publicKeySerializer()],
-      delegate: [33, publicKeySerializer()],
-      amount: [65, u64()],
+      stake: [1, publicKeySerializer()],
+      value: [33, u64()],
+      votes: [41, u64()],
     })
-    .deserializeUsing<Stake>((account) => deserializeStake(account))
-    .whereField("accountType", AccountType.Stake);
+    .deserializeUsing<Vote>((account) => deserializeVote(account))
+    .whereField("accountType", AccountType.Vote);
 }
 
-export function getStakeSize(): number {
-  return 73;
+export function getVoteSize(): number {
+  return 49;
 }
 
-export function findStakePda(
+export function findVotePda(
   context: Pick<Context, "eddsa" | "programs">,
   seeds: {
-    /** The address of the wallet. */
-    wallet: PublicKey;
+    /** The address of the voting account. */
+    voting: PublicKey;
+    /** The address of the stake account. */
+    stake: PublicKey;
   },
 ): Pda {
   const programId = context.programs.getPublicKey(
@@ -156,23 +155,24 @@ export function findStakePda(
     "DVMysqEbKDZdaJ1AVcmAqyVfvvZAMFwUkEQsNMQTvMZg",
   );
   return context.eddsa.findPda(programId, [
-    string({ size: "variable" }).serialize("stake"),
-    publicKeySerializer().serialize(seeds.wallet),
+    string({ size: "variable" }).serialize("vote"),
+    publicKeySerializer().serialize(seeds.voting),
+    publicKeySerializer().serialize(seeds.stake),
   ]);
 }
 
-export async function fetchStakeFromSeeds(
+export async function fetchVoteFromSeeds(
   context: Pick<Context, "eddsa" | "programs" | "rpc">,
-  seeds: Parameters<typeof findStakePda>[1],
+  seeds: Parameters<typeof findVotePda>[1],
   options?: RpcGetAccountOptions,
-): Promise<Stake> {
-  return fetchStake(context, findStakePda(context, seeds), options);
+): Promise<Vote> {
+  return fetchVote(context, findVotePda(context, seeds), options);
 }
 
-export async function safeFetchStakeFromSeeds(
+export async function safeFetchVoteFromSeeds(
   context: Pick<Context, "eddsa" | "programs" | "rpc">,
-  seeds: Parameters<typeof findStakePda>[1],
+  seeds: Parameters<typeof findVotePda>[1],
   options?: RpcGetAccountOptions,
-): Promise<Stake | null> {
-  return safeFetchStake(context, findStakePda(context, seeds), options);
+): Promise<Vote | null> {
+  return safeFetchVote(context, findVotePda(context, seeds), options);
 }

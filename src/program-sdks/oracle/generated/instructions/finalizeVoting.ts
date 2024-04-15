@@ -7,58 +7,58 @@
  */
 
 import type { ResolvedAccount, ResolvedAccountsWithIndices } from "../shared";
-import type { ExpireAssertionArgs, ExpireAssertionArgsArgs } from "../types";
+import type { FinalizeVotingArgs, FinalizeVotingArgsArgs } from "../types";
 import type { Context, Pda, PublicKey, TransactionBuilder } from "@metaplex-foundation/umi";
 import type { Serializer } from "@metaplex-foundation/umi/serializers";
 
 import { transactionBuilder } from "@metaplex-foundation/umi";
 import { mapSerializer, struct, u8 } from "@metaplex-foundation/umi/serializers";
 
-import { findAssertionPda } from "../accounts";
+import { findVotingPda } from "../accounts";
 import { expectPublicKey, getAccountMetasAndSigners } from "../shared";
-import { getExpireAssertionArgsSerializer } from "../types";
+import { getFinalizeVotingArgsSerializer } from "../types";
 
 // Accounts.
-export type ExpireAssertionInstructionAccounts = {
+export type FinalizeVotingInstructionAccounts = {
   /** Request */
   request: PublicKey | Pda;
-  /** Assertion */
-  assertion?: PublicKey | Pda;
+  /** Voting */
+  voting?: PublicKey | Pda;
 };
 
 // Data.
-export type ExpireAssertionInstructionData = {
+export type FinalizeVotingInstructionData = {
   discriminator: number;
-  expireAssertionArgs: ExpireAssertionArgs;
+  finalizeVotingArgs: FinalizeVotingArgs;
 };
 
-export type ExpireAssertionInstructionDataArgs = {
-  expireAssertionArgs: ExpireAssertionArgsArgs;
+export type FinalizeVotingInstructionDataArgs = {
+  finalizeVotingArgs: FinalizeVotingArgsArgs;
 };
 
-export function getExpireAssertionInstructionDataSerializer(): Serializer<
-  ExpireAssertionInstructionDataArgs,
-  ExpireAssertionInstructionData
+export function getFinalizeVotingInstructionDataSerializer(): Serializer<
+  FinalizeVotingInstructionDataArgs,
+  FinalizeVotingInstructionData
 > {
-  return mapSerializer<ExpireAssertionInstructionDataArgs, any, ExpireAssertionInstructionData>(
-    struct<ExpireAssertionInstructionData>(
+  return mapSerializer<FinalizeVotingInstructionDataArgs, any, FinalizeVotingInstructionData>(
+    struct<FinalizeVotingInstructionData>(
       [
         ["discriminator", u8()],
-        ["expireAssertionArgs", getExpireAssertionArgsSerializer()],
+        ["finalizeVotingArgs", getFinalizeVotingArgsSerializer()],
       ],
-      { description: "ExpireAssertionInstructionData" },
+      { description: "FinalizeVotingInstructionData" },
     ),
-    (value) => ({ ...value, discriminator: 3 }),
+    (value) => ({ ...value, discriminator: 6 }),
   );
 }
 
 // Args.
-export type ExpireAssertionInstructionArgs = ExpireAssertionInstructionDataArgs;
+export type FinalizeVotingInstructionArgs = FinalizeVotingInstructionDataArgs;
 
 // Instruction.
-export function expireAssertion(
+export function finalizeVoting(
   context: Pick<Context, "eddsa" | "programs">,
-  input: ExpireAssertionInstructionAccounts & ExpireAssertionInstructionArgs,
+  input: FinalizeVotingInstructionAccounts & FinalizeVotingInstructionArgs,
 ): TransactionBuilder {
   // Program ID.
   const programId = context.programs.getPublicKey(
@@ -73,19 +73,19 @@ export function expireAssertion(
       isWritable: true as boolean,
       value: input.request ?? null,
     },
-    assertion: {
+    voting: {
       index: 1,
-      isWritable: false as boolean,
-      value: input.assertion ?? null,
+      isWritable: true as boolean,
+      value: input.voting ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
-  const resolvedArgs: ExpireAssertionInstructionArgs = { ...input };
+  const resolvedArgs: FinalizeVotingInstructionArgs = { ...input };
 
   // Default values.
-  if (!resolvedAccounts.assertion.value) {
-    resolvedAccounts.assertion.value = findAssertionPda(context, {
+  if (!resolvedAccounts.voting.value) {
+    resolvedAccounts.voting.value = findVotingPda(context, {
       request: expectPublicKey(resolvedAccounts.request.value),
     });
   }
@@ -99,7 +99,7 @@ export function expireAssertion(
   const [keys, signers] = getAccountMetasAndSigners(orderedAccounts, "programId", programId);
 
   // Data.
-  const data = getExpireAssertionInstructionDataSerializer().serialize(resolvedArgs);
+  const data = getFinalizeVotingInstructionDataSerializer().serialize(resolvedArgs);
 
   // Bytes Created On Chain.
   const bytesCreatedOnChain = 0;

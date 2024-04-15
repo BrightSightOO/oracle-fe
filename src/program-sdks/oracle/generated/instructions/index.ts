@@ -11,3 +11,5 @@ export * from "./createOracle";
 export * from "./createRequest";
 export * from "./disputeAssertion";
 export * from "./expireAssertion";
+export * from "./finalizeVoting";
+export * from "./submitVote";

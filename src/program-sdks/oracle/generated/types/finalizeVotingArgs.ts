@@ -10,21 +10,17 @@ import type { Serializer } from "@metaplex-foundation/umi/serializers";
 
 import { scalarEnum } from "@metaplex-foundation/umi/serializers";
 
-export enum AccountType {
-  Uninitialized,
-  Oracle,
-  Stake,
-  Request,
-  Assertion,
-  Currency,
-  Voting,
-  Vote,
+export enum FinalizeVotingArgs {
+  V1,
 }
 
-export type AccountTypeArgs = AccountType;
+export type FinalizeVotingArgsArgs = FinalizeVotingArgs;
 
-export function getAccountTypeSerializer(): Serializer<AccountTypeArgs, AccountType> {
-  return scalarEnum<AccountType>(AccountType, {
-    description: "AccountType",
-  }) as Serializer<AccountTypeArgs, AccountType>;
+export function getFinalizeVotingArgsSerializer(): Serializer<
+  FinalizeVotingArgsArgs,
+  FinalizeVotingArgs
+> {
+  return scalarEnum<FinalizeVotingArgs>(FinalizeVotingArgs, {
+    description: "FinalizeVotingArgs",
+  }) as Serializer<FinalizeVotingArgsArgs, FinalizeVotingArgs>;
 }

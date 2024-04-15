@@ -12,5 +12,7 @@ export * from "./createOracleArgs";
 export * from "./createRequestArgs";
 export * from "./disputeAssertionArgs";
 export * from "./expireAssertionArgs";
+export * from "./finalizeVotingArgs";
 export * from "./requestData";
 export * from "./requestState";
+export * from "./submitVoteArgs";
