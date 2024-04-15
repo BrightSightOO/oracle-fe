@@ -121,7 +121,7 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
     const now = Date.now() / 1000;
     return [
       now < Number(data.requestedTime),
-      Boolean(data.expirationTime && now < Number(data.expirationTime)),
+      Boolean(!data.expirationTime || now < Number(data.expirationTime)),
     ];
   }, [data.expirationTime, data.resolvedTime]);
 
@@ -129,8 +129,7 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
     () =>
       Boolean(
         data.state === RequestState.Requested &&
-          isNotAssertable &&
-          !requestOption,
+          (isNotAssertable || !requestOption),
       ),
     [data.state, isNotAssertable, requestOption],
   );
