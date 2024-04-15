@@ -17,7 +17,7 @@ import DrawerTimestamps from './DrawerTimestamps';
 import DrawerTextData from './DrawerTextData';
 import DrawerInformation from './DrawerInformation';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   RequestState,
   deserializeAssertion,
@@ -42,41 +42,50 @@ const DrawerWrapper = ({
   const { white, black } = colors as MainColorSet;
 
   const { connection } = useConnection();
-  const [subData, setSubData] = useState<iOracle>();
+  const [subData, setSubData] = useState<iOracle>(() => data);
   const [requestId, setRequestId] = useState<number>();
   const [assertId, setAssertId] = useState<number>();
   const [votingId, setVotingId] = useState<number>();
 
   useEffect(() => {
     // Accounts are not expected to change after resolved
-    if (data.state === RequestState.Resolved) {
+    if (subData.state === RequestState.Resolved) {
       return;
     }
 
-    let updatedData = { ...data };
+    let updatedData = { ...subData };
+    let didDataUpdate = false;
     // Subscribe to accounts
-    const rId = connection.onAccountChange(
-      toWeb3JsPublicKey(data.request),
-      (accountRaw) => {
-        const requestAccount = deserializeRequest({
-          ...accountRaw,
-          lamports: lamports(accountRaw.lamports),
-          owner: fromWeb3JsPublicKey(accountRaw.owner),
-          rentEpoch: accountRaw.rentEpoch
-            ? BigInt(accountRaw.rentEpoch)
-            : undefined,
-          publicKey: data.request,
-        });
-        updatedData.state = requestAccount.state;
-        updatedData.resolvedTime = requestAccount.resolveTimestamp;
-        updatedData.resolvedValue = requestAccount.value;
-      },
-    );
-    setRequestId(rId);
+    if (!requestId) {
+      console.log('subscribe to request account');
 
-    if (data.asserter) {
+      const rId = connection.onAccountChange(
+        toWeb3JsPublicKey(subData.request),
+        (accountRaw) => {
+          const requestAccount = deserializeRequest({
+            ...accountRaw,
+            lamports: lamports(accountRaw.lamports),
+            owner: fromWeb3JsPublicKey(accountRaw.owner),
+            rentEpoch: accountRaw.rentEpoch
+              ? BigInt(accountRaw.rentEpoch)
+              : undefined,
+            publicKey: subData.request,
+          });
+          console.log('inside request cb', requestAccount);
+          didDataUpdate = true;
+          updatedData.state = requestAccount.state;
+          updatedData.resolvedTime = requestAccount.resolveTimestamp;
+          updatedData.resolvedValue = requestAccount.value;
+        },
+      );
+      setRequestId(rId);
+    }
+
+    if (!assertId && subData.asserter) {
+      console.log('subscribe to assert account', subData.asserter);
+
       const aId = connection.onAccountChange(
-        toWeb3JsPublicKey(data.asserter),
+        toWeb3JsPublicKey(subData.asserter),
         (accountRaw) => {
           const assertAccount = deserializeAssertion({
             ...accountRaw,
@@ -85,8 +94,10 @@ const DrawerWrapper = ({
             rentEpoch: accountRaw.rentEpoch
               ? BigInt(accountRaw.rentEpoch)
               : undefined,
-            publicKey: data.asserter!,
+            publicKey: subData.asserter!,
           });
+          console.log('inside assert cb', assertAccount);
+          didDataUpdate = true;
           updatedData.assertedTime = assertAccount.assertionTimestamp;
           updatedData.expirationTime = assertAccount.expirationTimestamp;
           updatedData.disputer = assertAccount.disputer;
@@ -106,9 +117,10 @@ const DrawerWrapper = ({
     //   setVotingId(vId);
     // }
 
-    setSubData(updatedData);
+    didDataUpdate && setSubData(updatedData);
 
     return () => {
+      console.log('unsubscribe to request', subData.request);
       requestId && connection.removeAccountChangeListener(requestId);
       assertId && connection.removeAccountChangeListener(assertId);
       votingId && connection.removeAccountChangeListener(votingId);
@@ -116,11 +128,7 @@ const DrawerWrapper = ({
       setAssertId(undefined);
       setVotingId(undefined);
     };
-  }, []);
-
-  const currentData = useMemo(() => {
-    return subData || data;
-  }, [data, subData]);
+  }, [subData]);
 
   return (
     <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
@@ -136,20 +144,21 @@ const DrawerWrapper = ({
               whiteSpace='wrap'
               noOfLines={2}
             >
-              {currentData.title}
+              {subData.title}
             </Text>
           </DrawerHeader>
         </HStack>
         <DrawerBody px='0'>
-          <DrawerRequestDetails data={currentData} />
+          <DrawerRequestDetails data={subData} />
           <DrawerTimestamps
-            requestedTime={currentData.requestedTime}
-            expirationTime={currentData.expirationTime}
-            resolvedTime={currentData.resolvedTime}
+            requestedTime={subData.requestedTime}
+            assertedTime={subData.assertedTime}
+            expirationTime={subData.expirationTime}
+            resolvedTime={subData.resolvedTime}
           />
           <VStack pb='64px'>
-            <DrawerTextData description={currentData.description} />
-            <DrawerInformation data={currentData} />
+            <DrawerTextData description={subData.description} />
+            <DrawerInformation data={subData} />
           </VStack>
         </DrawerBody>
       </DrawerContent>

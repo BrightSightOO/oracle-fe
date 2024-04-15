@@ -117,27 +117,27 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
     return <></>;
   };
 
-  const [isAfterRequestTime, isWithinExpiryWindow] = useMemo(() => {
+  const [isNotAssertable, isNotExpirable] = useMemo(() => {
     const now = Date.now() / 1000;
     return [
-      now > Number(data.resolvedTime),
+      now < Number(data.requestedTime),
       Boolean(data.expirationTime && now < Number(data.expirationTime)),
     ];
   }, [data.expirationTime, data.resolvedTime]);
 
-  const isAssertEnabled = useMemo(() => {
-    return Boolean(
-      data.state === RequestState.Requested &&
-        isAfterRequestTime &&
-        requestOption,
-    );
-  }, [data.state, data.expirationTime]);
+  const isAssertDisabled = useMemo(
+    () =>
+      Boolean(
+        data.state === RequestState.Requested &&
+          isNotAssertable &&
+          !requestOption,
+      ),
+    [data.state, isNotAssertable, requestOption],
+  );
 
-  const isResolveEnabled = useMemo(() => {
-    return Boolean(
-      data.state === RequestState.Asserted && !isWithinExpiryWindow,
-    );
-  }, [data.state, data.expirationTime]);
+  const isResolveDisabled = useMemo(() => {
+    return Boolean(data.state === RequestState.Asserted && isNotExpirable);
+  }, [data.state, isNotExpirable]);
 
   return (
     <VStack bg={background} alignItems='flex-start' px='28px' py='24px'>
@@ -185,7 +185,7 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
               {data.assertedValue === 0n ? 'No' : 'Yes'}
             </Text>
           </HStack>
-          {data.state === RequestState.Asserted && isWithinExpiryWindow ? (
+          {data.state === RequestState.Asserted && !isResolveDisabled ? (
             <Button variant='secondaryAction'>Dispute outcome</Button>
           ) : null}
         </HStack>
@@ -254,33 +254,68 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
           </HStack>
         </HStack>
       )}
-      <HStack w='full' justifyContent='space-between'>
-        <HStack>
-          <Text textStyle='Body' color={black}>
-            Dispute period ends
-          </Text>
-          <Tooltip
-            p='20px'
-            label='Every request to the Bright Sight Oracle specifies liveness settings that define the length of the challenge period during which a proposal can be challenged.'
-          >
-            <FontAwesomeIcon
-              icon={faCircleInfo}
-              style={{
-                width: '15px',
-              }}
-              cursor='pointer'
-              border={true}
-            />
-          </Tooltip>
+      {data.state === RequestState.Requested ? (
+        <HStack w='full' justifyContent='space-between'>
+          <HStack>
+            <Text textStyle='Body' color={black}>
+              Assertion window opens
+            </Text>
+            <Tooltip
+              p='20px'
+              label={`Providing an assertion to a market outcome is available after market resolution date.`}
+            >
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                style={{
+                  width: '15px',
+                }}
+                cursor='pointer'
+                border={true}
+              />
+            </Tooltip>
+          </HStack>
+
+          <HStack>
+            {!isResolveDisabled ? (
+              <CountdownTimer endTs={Number(data.requestedTime)} />
+            ) : (
+              <Text>Open to assert</Text>
+            )}
+          </HStack>
         </HStack>
-        <HStack>
-          {isWithinExpiryWindow ? (
-            <CountdownTimer endTs={Number(data.expirationTime)} />
-          ) : (
-            <Text>--</Text>
-          )}
+      ) : null}
+      {data.state === RequestState.Asserted ? (
+        <HStack w='full' justifyContent='space-between'>
+          <HStack>
+            <Text textStyle='Body' color={black}>
+              Dispute period ends
+            </Text>
+            <Tooltip
+              p='20px'
+              label={`Every request to the Bright Sight Oracle specifies liveness
+             settings that define the length of the challenge period during 
+             which a proposal can be challenged.`}
+            >
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                style={{
+                  width: '15px',
+                }}
+                cursor='pointer'
+                border={true}
+              />
+            </Tooltip>
+          </HStack>
+          <HStack>
+            {!isResolveDisabled ? (
+              <CountdownTimer endTs={Number(data.expirationTime)} />
+            ) : (
+              <Text>--</Text>
+            )}
+          </HStack>
         </HStack>
-      </HStack>
+      ) : null}
+
       {data.state !== RequestState.Resolved ? (
         wallet.connected ? (
           <Button
@@ -288,10 +323,7 @@ const DrawerRequestDetails = ({ data }: { data: iOracle }) => {
             h='50px'
             variant='primaryAction'
             onClick={submitModal.onOpen}
-            isDisabled={
-              (data.state === RequestState.Asserted && !isResolveEnabled) ||
-              (data.state === RequestState.Requested && !isAssertEnabled)
-            }
+            isDisabled={isAssertDisabled || isResolveDisabled}
           >
             {data.state === RequestState.Requested
               ? 'Assert Outcome'

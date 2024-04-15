@@ -4,10 +4,12 @@ import { Text, VStack, useTheme } from '@chakra-ui/react';
 
 const DrawerTimestamps = ({
   requestedTime,
+  assertedTime,
   expirationTime,
   resolvedTime,
 }: {
   requestedTime: bigint;
+  assertedTime: bigint | undefined;
   expirationTime: bigint | undefined;
   resolvedTime: bigint | undefined;
 }) => {
@@ -16,39 +18,28 @@ const DrawerTimestamps = ({
 
   return (
     <VStack px='28px' alignItems='flex-start'>
-      <Text textStyle='H5' fontWeight='700' mb='10px'>
+      <Text textStyle='H5' fontWeight='700' mb='2'>
         Timestamp
       </Text>
-      {requestedTime ? (
-        <VStack alignItems='flex-start'>
-          <Text textStyle='Body' fontWeight='700' color={black}>
-            Requested Time
-          </Text>
-          <Text textStyle='Body' color={black}>
-            {formatLongDate.format(Number(requestedTime * 1000n))}
-          </Text>
-        </VStack>
-      ) : null}
-      {expirationTime ? (
-        <VStack alignItems='flex-start'>
-          <Text textStyle='Body' fontWeight='700' color={black}>
-            Expiration Time
-          </Text>
-          <Text textStyle='Body' color={black}>
-            {formatLongDate.format(Number(expirationTime * 1000n))}
-          </Text>
-        </VStack>
-      ) : null}
-      {resolvedTime ? (
-        <VStack alignItems='flex-start'>
-          <Text textStyle='Body' fontWeight='700' color={black}>
-            Resolved Time
-          </Text>
-          <Text textStyle='Body' color={black}>
-            {formatLongDate.format(Number(resolvedTime * 1000n))}
-          </Text>
-        </VStack>
-      ) : null}
+      <VStack gap='2'>
+        {[
+          { ts: requestedTime, label: 'Requested Time' },
+          { ts: assertedTime, label: 'Asserted Time' },
+          { ts: expirationTime, label: 'Expiration Time' },
+          { ts: resolvedTime, label: 'Resolved Time' },
+        ].map(({ label, ts }) => {
+          return ts ? (
+            <VStack key={label} alignItems='flex-start' gap='1'>
+              <Text textStyle='Body' fontWeight='700' color={black}>
+                {label}
+              </Text>
+              <Text textStyle='Body' color={black}>
+                {formatLongDate.format(Number(ts * 1000n))}
+              </Text>
+            </VStack>
+          ) : null;
+        })}
+      </VStack>
     </VStack>
   );
 };

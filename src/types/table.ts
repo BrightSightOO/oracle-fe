@@ -16,6 +16,7 @@ export interface iOracle {
   bondMint: PublicKey;
   reward: Amount;
   creator: PublicKey;
+  // Unix timestamp after which a value can be asserted.
   assertedTime: bigint | undefined;
   expirationTime: bigint | undefined;
   asserter: PublicKey | undefined;
@@ -23,6 +24,7 @@ export interface iOracle {
   // No 0n, Yes 1n, Invalid 2n, or undefined if assert account does not exist
   assertedValue: bigint | undefined;
   disputedValue: bigint | undefined;
+  // Unix timestamp at which the request was resolved.
   resolvedTime: bigint | undefined;
   resolvedValue: bigint | undefined;
 }

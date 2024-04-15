@@ -13,7 +13,7 @@ const DrawerTextData = ({ description }: { description: string }) => {
       <Text textStyle='Body' fontWeight='700' color={black}>
         Description
       </Text>
-      <Text textStyle='Body' color={black}>
+      <Text textStyle='Body' color={black} wordBreak='break-word'>
         {description}
       </Text>
     </VStack>
