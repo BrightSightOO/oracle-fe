@@ -65,7 +65,7 @@ export const OracleProvider: FC<{
       { length: Number(account.nextIndex) },
       (_, k) => findRequestPda(umi, { index: k })[0],
     );
-    setOracleRequestKeys(requestPubkeyList);
+    setOracleRequestKeys(requestPubkeyList.reverse());
     return requestPubkeyList;
   };
 
