@@ -57,7 +57,16 @@ const ProposalTable = () => {
 
     const result: iOracle[] = [];
     for (const account of currentRequestAccounts) {
-      const info = descriptions[account.publicKey];
+      const info =
+        account.publicKey in descriptions
+          ? descriptions[account.publicKey]
+          : null;
+
+      // Skip requests with unavailable info
+      if (!info) {
+        continue;
+      }
+
       const assertAccount = oracleAssertionAccounts[account.publicKey];
       const bondMint = account.bondMint;
       const rewardMint = account.rewardMint;
@@ -104,7 +113,7 @@ const ProposalTable = () => {
       });
     }
     return result;
-  }, [oracleRequestAccounts, page]);
+  }, [oracleRequestAccounts, oracleAssertionAccounts, page, descriptions]);
 
   return (
     <VStack w='full' pt='20px' px='8px'>
