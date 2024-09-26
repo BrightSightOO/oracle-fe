@@ -1,6 +1,7 @@
 const WHITE = '#FFFFFF';
 const BLACK = '#1F2124';
 const BLACK_TRUE = '#000000';
+const BLACK_200 = '#28282B';
 const DARK_GREY = '#7C7B7C';
 const MEDIUM_GREY = '#8F9399';
 const LIGHT_GREY = '#B3B3B3';
@@ -34,10 +35,12 @@ const STROKE_GREY = '#D7E4FF';
 const CARD_BACKGROUND = '#292D32';
 const PRIMARY_RED = '#FF3D00';
 const PRIMARY_GREEN = '#00D495';
+const SUBTLE_GREEN = '#02BF86';
 
 export const lightTheme = {
   white: WHITE,
   black: BLACK,
+  black200: BLACK_200,
   bluePrimary: SURFACE_BLUE,
   backgroundMain: SURFACE_BACKGROUND,
   strokeGrey: STROKE_GREY,
@@ -91,6 +94,7 @@ export const lightTheme = {
 export const darkTheme = {
   white: WHITE,
   black: BLACK,
+  black200: BLACK_200,
   bluePrimary: SURFACE_BLUE,
   backgroundMain: BLACK_TRUE,
   strokeGrey: STROKE_GREY,

@@ -31,7 +31,7 @@ const content = [
   },
 ];
 
-const VoteHome = () => {
+const VotePage = () => {
   const { colors } = useTheme();
   const { black, white, background, backgroundMain, bluePrimary } =
     colors as MainColorSet;
@@ -127,4 +127,4 @@ const VoteHome = () => {
   );
 };
 
-export default VoteHome;
+export default VotePage;

@@ -1,35 +1,17 @@
 import { MainColorSet } from '@/theme/types';
-import { OracleType } from '@/types/tableData';
-import { Text, VStack, useTheme } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import { iOracle } from '@/types/table';
+import { Text, VStack, chakra, useTheme } from '@chakra-ui/react';
 
-const DrawerInfoText = ({
-  children,
-  color,
-  fontWeight = '400',
-  mt = '0',
-}: {
-  children: ReactNode;
-  color: string;
-  fontWeight?: string;
-  mt?: string;
-}) => {
-  return (
-    <Text
-      textStyle='Body'
-      overflowWrap='break-word'
-      maxW='480px'
-      w='full'
-      color={color}
-      fontWeight={fontWeight}
-      mt={mt}
-    >
-      {children}
-    </Text>
-  );
-};
+const DrawerInfoText = chakra(Text, {
+  baseStyle: {
+    textStyle: 'Body',
+    overflowWrap: 'break-word',
+    maxW: '480px',
+    w: 'full',
+  },
+});
 
-const DrawerInformation = ({ data }: { data: OracleType }) => {
+const DrawerInformation = ({ data }: { data: iOracle }) => {
   const { colors } = useTheme();
   const { bluePrimary, black } = colors as MainColorSet;
 
@@ -39,7 +21,7 @@ const DrawerInformation = ({ data }: { data: OracleType }) => {
         More information
       </Text>
       <Text textStyle='Body' fontWeight='700' color={black} mt='16px'>
-        {data.type}
+        {data.oracleType}
       </Text>
       <Text
         textStyle='Body'
@@ -47,38 +29,15 @@ const DrawerInformation = ({ data }: { data: OracleType }) => {
         overflowWrap='break-word'
         w='full'
       >
-        {data.oracle}
+        {data.request}
       </Text>
-      {data.umip && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText color={black} fontWeight='700'>
-            UMIP
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.umip}</DrawerInfoText>
-        </VStack>
-      )}
-      {data.identifier && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText color={black} fontWeight='700' mt='16px'>
-            Identifier
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.identifier}</DrawerInfoText>
-        </VStack>
-      )}
-      {data.requester && (
+
+      {data.request && (
         <VStack alignItems='flex-start'>
           <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Requester
+            Request Account
           </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.requester}</DrawerInfoText>
-        </VStack>
-      )}
-      {data.requestTxn && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Request Transaction
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.requestTxn}</DrawerInfoText>
+          <DrawerInfoText color={bluePrimary}>{data.request}</DrawerInfoText>
         </VStack>
       )}
       {data.asserter && (
@@ -89,62 +48,12 @@ const DrawerInformation = ({ data }: { data: OracleType }) => {
           <DrawerInfoText color={bluePrimary}>{data.asserter}</DrawerInfoText>
         </VStack>
       )}
-      {data.escalationManager && (
+      {data.creator && (
         <VStack alignItems='flex-start'>
           <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Escalation Manager
+            Request creator
           </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>
-            {data.escalationManager}
-          </DrawerInfoText>
-        </VStack>
-      )}
-      {data.callbackRecipient && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Callback Recipient
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>
-            {data.callbackRecipient}
-          </DrawerInfoText>
-        </VStack>
-      )}
-      {data.caller && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Caller
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>{data.caller}</DrawerInfoText>
-        </VStack>
-      )}
-      {data.assertionTxn && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Assertion Transaction
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>
-            {data.assertionTxn}
-          </DrawerInfoText>
-        </VStack>
-      )}
-      {data.settlementRecipient && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Settlement Recipient
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>
-            {data.settlementRecipient}
-          </DrawerInfoText>
-        </VStack>
-      )}
-      {data.settlementTxn && (
-        <VStack alignItems='flex-start'>
-          <DrawerInfoText fontWeight='700' color={black} mt='16px'>
-            Settlement Transaction
-          </DrawerInfoText>
-          <DrawerInfoText color={bluePrimary}>
-            {data.settlementTxn}
-          </DrawerInfoText>
+          <DrawerInfoText color={bluePrimary}>{data.creator}</DrawerInfoText>
         </VStack>
       )}
     </VStack>

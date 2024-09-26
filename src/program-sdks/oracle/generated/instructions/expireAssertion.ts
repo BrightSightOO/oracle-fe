@@ -75,7 +75,7 @@ export function expireAssertion(
     },
     assertion: {
       index: 1,
-      isWritable: true as boolean,
+      isWritable: false as boolean,
       value: input.assertion ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

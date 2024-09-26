@@ -17,6 +17,8 @@ export enum AccountType {
   Request,
   Assertion,
   Currency,
+  Voting,
+  Vote,
 }
 
 export type AccountTypeArgs = AccountType;

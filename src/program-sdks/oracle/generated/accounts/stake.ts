@@ -25,9 +25,9 @@ import {
   publicKey as toPublicKey,
 } from "@metaplex-foundation/umi";
 import {
-  i64,
   mapSerializer,
   publicKey as publicKeySerializer,
+  string,
   struct,
   u64,
 } from "@metaplex-foundation/umi/serializers";
@@ -41,14 +41,12 @@ export type StakeAccountData = {
   owner: PublicKey;
   delegate: PublicKey;
   amount: bigint;
-  lockup: bigint;
 };
 
 export type StakeAccountDataArgs = {
   owner: PublicKey;
   delegate: PublicKey;
   amount: number | bigint;
-  lockup: number | bigint;
 };
 
 export function getStakeAccountDataSerializer(): Serializer<
@@ -62,7 +60,6 @@ export function getStakeAccountDataSerializer(): Serializer<
         ["owner", publicKeySerializer()],
         ["delegate", publicKeySerializer()],
         ["amount", u64()],
-        ["lockup", i64()],
       ],
       { description: "StakeAccountData" },
     ),
@@ -133,18 +130,49 @@ export function getStakeGpaBuilder(context: Pick<Context, "rpc" | "programs">) {
       owner: PublicKey;
       delegate: PublicKey;
       amount: number | bigint;
-      lockup: number | bigint;
     }>({
       accountType: [0, getAccountTypeSerializer()],
       owner: [1, publicKeySerializer()],
       delegate: [33, publicKeySerializer()],
       amount: [65, u64()],
-      lockup: [73, i64()],
     })
     .deserializeUsing<Stake>((account) => deserializeStake(account))
     .whereField("accountType", AccountType.Stake);
 }
 
 export function getStakeSize(): number {
-  return 81;
+  return 73;
+}
+
+export function findStakePda(
+  context: Pick<Context, "eddsa" | "programs">,
+  seeds: {
+    /** The address of the wallet. */
+    wallet: PublicKey;
+  },
+): Pda {
+  const programId = context.programs.getPublicKey(
+    "optimisticOracle",
+    "DVMysqEbKDZdaJ1AVcmAqyVfvvZAMFwUkEQsNMQTvMZg",
+  );
+  return context.eddsa.findPda(programId, [
+    string({ size: "variable" }).serialize("stake"),
+    publicKeySerializer().serialize(seeds.wallet),
+  ]);
+}
+
+export async function fetchStakeFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findStakePda>[1],
+  options?: RpcGetAccountOptions,
+): Promise<Stake> {
+  return fetchStake(context, findStakePda(context, seeds), options);
+}
+
+export async function safeFetchStakeFromSeeds(
+  context: Pick<Context, "eddsa" | "programs" | "rpc">,
+  seeds: Parameters<typeof findStakePda>[1],
+  options?: RpcGetAccountOptions,
+): Promise<Stake | null> {
+  return safeFetchStake(context, findStakePda(context, seeds), options);
 }

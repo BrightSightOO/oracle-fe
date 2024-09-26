@@ -32,6 +32,8 @@ export type CreateRequestInstructionAccounts = {
   rewardSource?: PublicKey | Pda;
   /** Reward escrow token account */
   rewardEscrow?: PublicKey | Pda;
+  /** Bond mint */
+  bondMint: PublicKey | Pda;
   /** Creator */
   creator?: Signer;
   /** Payer */
@@ -109,23 +111,28 @@ export function createRequest(
       isWritable: true as boolean,
       value: input.rewardEscrow ?? null,
     },
-    creator: {
+    bondMint: {
       index: 5,
+      isWritable: false as boolean,
+      value: input.bondMint ?? null,
+    },
+    creator: {
+      index: 6,
       isWritable: false as boolean,
       value: input.creator ?? null,
     },
     payer: {
-      index: 6,
+      index: 7,
       isWritable: true as boolean,
       value: input.payer ?? null,
     },
     tokenProgram: {
-      index: 7,
+      index: 8,
       isWritable: false as boolean,
       value: input.tokenProgram ?? null,
     },
     systemProgram: {
-      index: 8,
+      index: 9,
       isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },

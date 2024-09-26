@@ -15,15 +15,13 @@ import { findAssociatedTokenPda } from "@metaplex-foundation/mpl-toolbox";
 import { transactionBuilder } from "@metaplex-foundation/umi";
 import { mapSerializer, struct, u8 } from "@metaplex-foundation/umi/serializers";
 
-import { findAssertBondPda, findAssertGovernanceBondPda } from "../../hooked";
-import { findAssertionPda, findOraclePda } from "../accounts";
+import { findAssertBondPda } from "../../hooked";
+import { findAssertionPda } from "../accounts";
 import { expectPublicKey, getAccountMetasAndSigners } from "../shared";
 import { getCreateAssertionArgsSerializer } from "../types";
 
 // Accounts.
 export type CreateAssertionInstructionAccounts = {
-  /** Program oracle account */
-  oracle?: PublicKey | Pda;
   /** Request */
   request: PublicKey | Pda;
   /** Assertion */
@@ -34,12 +32,6 @@ export type CreateAssertionInstructionAccounts = {
   bondSource?: PublicKey | Pda;
   /** Bond escrow token account */
   bondEscrow?: PublicKey | Pda;
-  /** Governance mint */
-  governanceMint: PublicKey | Pda;
-  /** Governance source token account */
-  governanceSource?: PublicKey | Pda;
-  /** Governance escrow token account */
-  governanceEscrow?: PublicKey | Pda;
   /** Asserter */
   asserter?: Signer;
   /** Payer */
@@ -92,68 +84,48 @@ export function createAssertion(
 
   // Accounts.
   const resolvedAccounts = {
-    oracle: {
-      index: 0,
-      isWritable: false as boolean,
-      value: input.oracle ?? null,
-    },
     request: {
-      index: 1,
+      index: 0,
       isWritable: true as boolean,
       value: input.request ?? null,
     },
     assertion: {
-      index: 2,
+      index: 1,
       isWritable: true as boolean,
       value: input.assertion ?? null,
     },
     bondMint: {
-      index: 3,
+      index: 2,
       isWritable: false as boolean,
       value: input.bondMint ?? null,
     },
     bondSource: {
-      index: 4,
+      index: 3,
       isWritable: true as boolean,
       value: input.bondSource ?? null,
     },
     bondEscrow: {
-      index: 5,
+      index: 4,
       isWritable: true as boolean,
       value: input.bondEscrow ?? null,
     },
-    governanceMint: {
-      index: 6,
-      isWritable: false as boolean,
-      value: input.governanceMint ?? null,
-    },
-    governanceSource: {
-      index: 7,
-      isWritable: true as boolean,
-      value: input.governanceSource ?? null,
-    },
-    governanceEscrow: {
-      index: 8,
-      isWritable: true as boolean,
-      value: input.governanceEscrow ?? null,
-    },
     asserter: {
-      index: 9,
+      index: 5,
       isWritable: false as boolean,
       value: input.asserter ?? null,
     },
     payer: {
-      index: 10,
+      index: 6,
       isWritable: true as boolean,
       value: input.payer ?? null,
     },
     tokenProgram: {
-      index: 11,
+      index: 7,
       isWritable: false as boolean,
       value: input.tokenProgram ?? null,
     },
     systemProgram: {
-      index: 12,
+      index: 8,
       isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
@@ -163,9 +135,6 @@ export function createAssertion(
   const resolvedArgs: CreateAssertionInstructionArgs = { ...input };
 
   // Default values.
-  if (!resolvedAccounts.oracle.value) {
-    resolvedAccounts.oracle.value = findOraclePda(context);
-  }
   if (!resolvedAccounts.assertion.value) {
     resolvedAccounts.assertion.value = findAssertionPda(context, {
       request: expectPublicKey(resolvedAccounts.request.value),
@@ -182,17 +151,6 @@ export function createAssertion(
   }
   if (!resolvedAccounts.bondEscrow.value) {
     resolvedAccounts.bondEscrow.value = findAssertBondPda(context, {
-      request: expectPublicKey(resolvedAccounts.request.value),
-    });
-  }
-  if (!resolvedAccounts.governanceSource.value) {
-    resolvedAccounts.governanceSource.value = findAssociatedTokenPda(context, {
-      mint: expectPublicKey(resolvedAccounts.governanceMint.value),
-      owner: expectPublicKey(resolvedAccounts.asserter.value),
-    });
-  }
-  if (!resolvedAccounts.governanceEscrow.value) {
-    resolvedAccounts.governanceEscrow.value = findAssertGovernanceBondPda(context, {
       request: expectPublicKey(resolvedAccounts.request.value),
     });
   }
