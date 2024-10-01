@@ -1,6 +1,6 @@
 export const textStyles = {
   H1: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '34px',
     fontStyle: 'normal',
@@ -8,7 +8,7 @@ export const textStyles = {
     lineHeight: '130%',
   },
   H1Alt: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '28px',
     fontStyle: 'normal',
@@ -16,7 +16,7 @@ export const textStyles = {
     lineHeight: '130%',
   },
   H2: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '28px',
     fontStyle: 'normal',
@@ -24,7 +24,7 @@ export const textStyles = {
     lineHeight: '130%',
   },
   H3: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '24px',
     fontStyle: 'normal',
@@ -32,7 +32,7 @@ export const textStyles = {
     lineHeight: '100%',
   },
   H4: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '20px',
     fontStyle: 'normal',
@@ -40,7 +40,7 @@ export const textStyles = {
     lineHeight: '100%',
   },
   H5: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '18px',
     fontStyle: 'normal',
@@ -48,7 +48,7 @@ export const textStyles = {
     lineHeight: '24px',
   },
   H6: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '14px',
     fontStyle: 'normal',
@@ -56,7 +56,7 @@ export const textStyles = {
     lineHeight: '24px',
   },
   H7: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '12px',
     fontStyle: 'normal',
@@ -64,7 +64,7 @@ export const textStyles = {
     lineHeight: '20px',
   },
   H8: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '10px',
     fontStyle: 'normal',
@@ -72,7 +72,7 @@ export const textStyles = {
     lineHeight: '10px',
   },
   H9: {
-    color: '#1F2124',
+    color: 'textPrimary',
     fontFamily: 'NeueHaas',
     fontSize: '10px',
     fontStyle: 'normal',

@@ -1,4 +1,8 @@
 export type MainColorSet = {
+  titleText: string;
+  iconPrimary: string;
+  mainLogo: string;
+
   white: string;
   black: string;
   bluePrimary: string;
@@ -12,6 +16,9 @@ export type MainColorSet = {
   // BACKGROUND
   background: string;
   backgroundCard: string;
+  backgroundList: string;
+  backgroundCardSecondary: string;
+  backgroundGray: string;
   backgroundHover: string;
   backgroundTool: string;
 
@@ -30,20 +37,26 @@ export type MainColorSet = {
 
   // RED
   redPrimary: string;
+  pinkPrimary: string;
+  pinkSecondary: string;
   redSecondary: string;
   redTerniary: string;
   redSubdued: string;
-  red4: string;
+  redLight: string;
+  redDark: string;
 
   // GREEN
   greenPrimary: string;
+  greenLight: string;
   greenSecondary: string;
+  greenDark: string;
+  greenBrightSight: string;
+
+  // BRAND
+  jupiterBg: string;
 
   // OTHER
   gold: string;
   orange: string;
   surfaceDefault: string;
-
-  gradientPrimary: string;
-  gradientSecondary: string;
 };
