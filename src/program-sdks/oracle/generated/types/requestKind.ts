@@ -10,17 +10,14 @@ import type { Serializer } from "@metaplex-foundation/umi/serializers";
 
 import { scalarEnum } from "@metaplex-foundation/umi/serializers";
 
-export enum RequestState {
-  Requested,
-  Asserted,
-  Disputed,
-  Resolved,
+export enum RequestKind {
+  YesNo,
 }
 
-export type RequestStateArgs = RequestState;
+export type RequestKindArgs = RequestKind;
 
-export function getRequestStateSerializer(): Serializer<RequestStateArgs, RequestState> {
-  return scalarEnum<RequestState>(RequestState, {
-    description: "RequestState",
-  }) as Serializer<RequestStateArgs, RequestState>;
+export function getRequestKindSerializer(): Serializer<RequestKindArgs, RequestKind> {
+  return scalarEnum<RequestKind>(RequestKind, {
+    description: "RequestKind",
+  }) as Serializer<RequestKindArgs, RequestKind>;
 }
