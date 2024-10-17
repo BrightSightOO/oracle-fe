@@ -1,32 +1,32 @@
-import { FC, useMemo } from 'react';
-import { ScriptProps } from 'next/script';
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-} from '@solana/wallet-adapter-wallets';
-import { UmiProvider } from './UmiProvider';
-import { useCluster } from './cluster';
-import { RPC_POOL_CLUSTER_MAP } from './rpc';
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { ScriptProps } from "next/script";
+import { FC, useMemo } from "react";
+import { UmiProvider } from "./UmiProvider";
+import { useCluster } from "./cluster";
 
 // Use require instead of import since order matters
-require('@solana/wallet-adapter-react-ui/styles.css');
+require("@solana/wallet-adapter-react-ui/styles.css");
+
+export type RpcNetwork = WalletAdapterNetwork.Devnet | WalletAdapterNetwork.Mainnet;
 
 const WalletConnectionProvider: FC<ScriptProps> = ({ children }) => {
   const network = useCluster();
 
+  const devnetUrl = process.env.NEXT_PUBLIC_DEVNET_RPC_URL;
+  const mainnetUrl = process.env.NEXT_PUBLIC_MAINNET_RPC_URL;
+
   const endpoint = useMemo(
-    () => RPC_POOL_CLUSTER_MAP[network as keyof typeof RPC_POOL_CLUSTER_MAP],
-    [network]
+    () => (network === WalletAdapterNetwork.Devnet ? devnetUrl : mainnetUrl),
+    [devnetUrl, mainnetUrl, network],
   );
 
   const wallets = useMemo(
     () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    [network]
+    // TODO: Check if dependency on `network` is necessary.
+    [network],
   );
 
   return (

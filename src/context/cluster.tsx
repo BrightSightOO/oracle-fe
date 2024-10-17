@@ -1,38 +1,35 @@
-import _ from 'lodash';
-import { FC, createContext, useContext, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { ScriptProps } from 'next/script';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { ClusterKey, setCluster } from '../constants/index';
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { useRouter } from "next/router";
+import { ScriptProps } from "next/script";
+import { FC, createContext, useContext, useEffect, useMemo } from "react";
+import { ClusterKey, setCluster } from "../constants/index";
 
-export const ClusterContext = createContext<WalletAdapterNetwork>(
-  WalletAdapterNetwork.Devnet
-);
+export type RpcNetwork = WalletAdapterNetwork.Devnet | WalletAdapterNetwork.Mainnet;
+
+export const ClusterContext = createContext<RpcNetwork>(WalletAdapterNetwork.Devnet);
 
 export const useCluster = () => useContext(ClusterContext);
 
 export const ClusterContextProvider: FC<ScriptProps> = ({ children }) => {
-  const envRpcNetwork = process.env.NEXT_PUBLIC_RPC_NETWORK || '';
   const router = useRouter();
 
-  const network = useMemo(() => {
-    if (
-      _.includes(
-        [WalletAdapterNetwork.Devnet, WalletAdapterNetwork.Mainnet],
-        router.query.network
-      )
-    ) {
-      return router.query.network as WalletAdapterNetwork;
-    }
+  const envNetwork = process.env.NEXT_PUBLIC_RPC_NETWORK;
+  const routerNetwork = Array.isArray(router.query.network)
+    ? router.query.network.at(-1)
+    : router.query.network;
 
-    return envRpcNetwork as WalletAdapterNetwork;
-  }, [envRpcNetwork, router.query.network]);
+  const network = useMemo(() => {
+    switch (routerNetwork) {
+      case WalletAdapterNetwork.Devnet:
+      case WalletAdapterNetwork.Mainnet:
+        return routerNetwork;
+
+      default:
+        return envNetwork;
+    }
+  }, [routerNetwork, envNetwork]);
 
   useEffect(() => setCluster(network as ClusterKey), [network]);
 
-  return (
-    <ClusterContext.Provider value={network}>
-      {children}
-    </ClusterContext.Provider>
-  );
+  return <ClusterContext.Provider value={network}>{children}</ClusterContext.Provider>;
 };
