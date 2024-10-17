@@ -13,7 +13,7 @@ import type { Serializer } from "@metaplex-foundation/umi/serializers";
 import { transactionBuilder } from "@metaplex-foundation/umi";
 import { mapSerializer, struct, u64, u8 } from "@metaplex-foundation/umi/serializers";
 
-import { findVoteV1Pda, findVotingV1Pda } from "../accounts";
+import { findVoteV1Pda } from "../accounts";
 import { expectPublicKey, getAccountMetasAndSigners } from "../shared";
 
 // Accounts.
@@ -23,7 +23,7 @@ export type SubmitVoteV1InstructionAccounts = {
   /** Request */
   request: PublicKey | Pda;
   /** Voting */
-  voting?: PublicKey | Pda;
+  voting: PublicKey | Pda;
   /** Vote */
   vote?: PublicKey | Pda;
   /** Stake */
@@ -118,11 +118,6 @@ export function submitVoteV1(
   const resolvedArgs: SubmitVoteV1InstructionArgs = { ...input };
 
   // Default values.
-  if (!resolvedAccounts.voting.value) {
-    resolvedAccounts.voting.value = findVotingV1Pda(context, {
-      request: expectPublicKey(resolvedAccounts.request.value),
-    });
-  }
   if (!resolvedAccounts.vote.value) {
     resolvedAccounts.vote.value = findVoteV1Pda(context, {
       voting: expectPublicKey(resolvedAccounts.voting.value),

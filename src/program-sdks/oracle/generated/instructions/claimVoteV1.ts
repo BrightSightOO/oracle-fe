@@ -129,7 +129,7 @@ export function claimVoteV1(
   // Default values.
   if (!resolvedAccounts.voting.value) {
     resolvedAccounts.voting.value = findVotingV1Pda(context, {
-      request: expectPublicKey(resolvedAccounts.request.value),
+      assertion: expectPublicKey(resolvedAccounts.assertion.value),
     });
   }
   if (!resolvedAccounts.vote.value) {

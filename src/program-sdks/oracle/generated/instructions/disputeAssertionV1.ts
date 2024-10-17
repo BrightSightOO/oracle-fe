@@ -148,7 +148,7 @@ export function disputeAssertionV1(
   }
   if (!resolvedAccounts.voting.value) {
     resolvedAccounts.voting.value = findVotingV1Pda(context, {
-      request: expectPublicKey(resolvedAccounts.request.value),
+      assertion: expectPublicKey(resolvedAccounts.assertion.value),
     });
   }
   if (!resolvedAccounts.disputer.value) {

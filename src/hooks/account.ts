@@ -1,0 +1,83 @@
+import { useUmi } from "@/context/UmiProvider";
+import {
+  Account,
+  deserializeAccount,
+  MaybeRpcAccount,
+  PublicKey,
+  RpcAccount,
+} from "@metaplex-foundation/umi";
+import { fromWeb3JsPublicKey, toWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
+import { Serializer } from "@metaplex-foundation/umi/serializers";
+import { useEffect, useRef, useState } from "react";
+
+export function useAccount<T extends object>(
+  address: PublicKey,
+  accountSerializer: Serializer<T> | (() => Serializer<T>),
+): Account<T> | undefined {
+  const umi = useUmi();
+
+  const [rawAccount, setRawAccount] = useState<RpcAccount>();
+  const [account, setAccount] = useState<Account<T>>();
+
+  const serializer = useRef<Serializer<T>>();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    let subscriptionId: number | undefined;
+
+    void (async () => {
+      let account: MaybeRpcAccount;
+      try {
+        account = await umi.rpc.getAccount(address);
+      } catch (err) {
+        if (signal.aborted) {
+          return;
+        }
+        throw err;
+      }
+
+      if (!account.exists) {
+        setRawAccount(undefined);
+        return;
+      }
+      setRawAccount(account);
+
+      subscriptionId = umi.rpc.connection.onAccountChange(
+        toWeb3JsPublicKey(address),
+        ({ executable, owner, lamports, data, rentEpoch }) =>
+          setRawAccount({
+            executable,
+            owner: fromWeb3JsPublicKey(owner),
+            lamports: { basisPoints: BigInt(lamports), identifier: "SOL", decimals: 9 },
+            rentEpoch: rentEpoch === undefined ? undefined : BigInt(rentEpoch),
+            publicKey: address,
+            data: new Uint8Array(data),
+          }),
+      );
+    })();
+
+    return () => {
+      controller.abort();
+
+      if (subscriptionId !== undefined) {
+        void umi.rpc.connection.removeAccountChangeListener(subscriptionId);
+      }
+    };
+  }, [address, umi.rpc]);
+
+  useEffect(() => {
+    if (rawAccount === undefined || rawAccount.data.length === 0) {
+      setAccount(undefined);
+      return;
+    }
+
+    serializer.current ??=
+      typeof accountSerializer === "function" ? accountSerializer() : accountSerializer;
+
+    setAccount(deserializeAccount(rawAccount, serializer.current));
+  }, [accountSerializer, rawAccount]);
+
+  return account;
+}

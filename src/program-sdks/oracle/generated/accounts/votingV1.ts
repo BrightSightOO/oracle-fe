@@ -168,8 +168,8 @@ export function getVotingV1GpaBuilder(context: Pick<Context, "rpc" | "programs">
 export function findVotingV1Pda(
   context: Pick<Context, "eddsa" | "programs">,
   seeds: {
-    /** The address of the request. */
-    request: PublicKey;
+    /** The address of the assertion. */
+    assertion: PublicKey;
   },
 ): Pda {
   const programId = context.programs.getPublicKey(
@@ -178,7 +178,7 @@ export function findVotingV1Pda(
   );
   return context.eddsa.findPda(programId, [
     string({ size: "variable" }).serialize("voting"),
-    publicKeySerializer().serialize(seeds.request),
+    publicKeySerializer().serialize(seeds.assertion),
   ]);
 }
 

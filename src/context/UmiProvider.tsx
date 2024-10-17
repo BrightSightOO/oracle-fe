@@ -1,16 +1,19 @@
 import { optimisticOracle } from "@/program-sdks/oracle";
 import { parimutuelResolver } from "@/program-sdks/par-resolver";
-import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
+import { dasApi, DasApiInterface } from "@metaplex-foundation/digital-asset-standard-api";
 import { mplToolbox } from "@metaplex-foundation/mpl-toolbox";
-import { Umi } from "@metaplex-foundation/umi";
+import { RpcInterface, Umi } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { FC, createContext, ReactNode, useContext } from "react";
+import { Connection } from "@solana/web3.js";
 
-export const UmiContext = createContext<Umi | undefined>(undefined);
+type Web3JsUmi = Umi & { rpc: { readonly connection: Connection } };
 
-export function useUmi(): Umi {
+export const UmiContext = createContext<Web3JsUmi | undefined>(undefined);
+
+export function useUmi(): Web3JsUmi {
   const umi = useContext(UmiContext);
   if (umi === undefined) {
     throw new Error(
@@ -26,12 +29,12 @@ export const UmiProvider: FC<{ children: ReactNode; endpoint: string }> = ({
 }) => {
   const wallet = useWallet();
 
-  const umi = createUmi(endpoint)
+  const umi = createUmi(endpoint, { commitment: "confirmed" })
     .use(walletAdapterIdentity(wallet))
     .use(dasApi())
     .use(mplToolbox())
     .use(optimisticOracle())
-    .use(parimutuelResolver());
+    .use(parimutuelResolver()) as Web3JsUmi;
 
   return <UmiContext.Provider value={umi}>{children}</UmiContext.Provider>;
 };
