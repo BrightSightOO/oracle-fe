@@ -2,24 +2,11 @@ import { shortDateFmt } from "@/utils/time";
 import { VStack } from "@chakra-ui/react";
 import { RequestStatus } from ".";
 import RequestCard from "./RequestCard";
+import { FC } from "react";
 
-type MarketInfo = {
-  id: string;
-  closingDate: Date;
-  status: RequestStatus;
-  title: string;
-  description: string;
-  bond: number;
-  reward: number;
-  disputeDate: Date;
-  answer: string[] | null;
-  disputed: string | null;
-  disputedVoted: string | null;
-  resultFromVote: string | null;
-  options: string[];
-};
+const RequestList: FC<{ status: RequestStatus }> = ({ status }) => {
+  
 
-const RequestList = ({ data }: { data: MarketInfo[] }) => {
   const renderRequestCard = (request: MarketInfo) => {
     if (!request) return null;
     const closingDate = shortDateFmt.format(request.closingDate);

@@ -1,3 +1,5 @@
+import type { AccountInfo } from "@solana/web3.js";
+
 import { useUmi } from "@/context/UmiProvider";
 import {
   Account,
@@ -9,6 +11,22 @@ import {
 import { fromWeb3JsPublicKey, toWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
 import { Serializer } from "@metaplex-foundation/umi/serializers";
 import { useEffect, useRef, useState } from "react";
+
+export function rpcAccountFromWeb3Js(
+  publicKey: PublicKey,
+  accountInfo: AccountInfo<Uint8Array | Buffer>,
+): RpcAccount {
+  const { executable, owner, lamports, rentEpoch, data } = accountInfo;
+
+  return {
+    executable,
+    owner: fromWeb3JsPublicKey(owner),
+    lamports: { basisPoints: BigInt(lamports), identifier: "SOL", decimals: 9 },
+    rentEpoch: rentEpoch === undefined ? undefined : BigInt(rentEpoch),
+    publicKey,
+    data: new Uint8Array(data.buffer, data.byteOffset, data.byteLength),
+  };
+}
 
 export function useAccount<T extends object>(
   address: PublicKey,
@@ -30,7 +48,7 @@ export function useAccount<T extends object>(
     void (async () => {
       let account: MaybeRpcAccount;
       try {
-        account = await umi.rpc.getAccount(address);
+        account = await umi.rpc.getAccount(address, { signal });
       } catch (err) {
         if (signal.aborted) {
           return;
@@ -46,15 +64,7 @@ export function useAccount<T extends object>(
 
       subscriptionId = umi.rpc.connection.onAccountChange(
         toWeb3JsPublicKey(address),
-        ({ executable, owner, lamports, data, rentEpoch }) =>
-          setRawAccount({
-            executable,
-            owner: fromWeb3JsPublicKey(owner),
-            lamports: { basisPoints: BigInt(lamports), identifier: "SOL", decimals: 9 },
-            rentEpoch: rentEpoch === undefined ? undefined : BigInt(rentEpoch),
-            publicKey: address,
-            data: new Uint8Array(data),
-          }),
+        (accountInfo) => setRawAccount(rpcAccountFromWeb3Js(address, accountInfo)),
       );
     })();
 
