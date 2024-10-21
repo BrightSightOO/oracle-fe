@@ -1,6 +1,5 @@
-import type { AccountInfo } from "@solana/web3.js";
-
 import { useUmi } from "@/context/UmiProvider";
+import { fromWeb3JsAccountInfo } from "@/utils/web3js-adapters";
 import {
   Account,
   deserializeAccount,
@@ -8,25 +7,9 @@ import {
   PublicKey,
   RpcAccount,
 } from "@metaplex-foundation/umi";
-import { fromWeb3JsPublicKey, toWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
+import { toWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
 import { Serializer } from "@metaplex-foundation/umi/serializers";
 import { useEffect, useRef, useState } from "react";
-
-export function rpcAccountFromWeb3Js(
-  publicKey: PublicKey,
-  accountInfo: AccountInfo<Uint8Array | Buffer>,
-): RpcAccount {
-  const { executable, owner, lamports, rentEpoch, data } = accountInfo;
-
-  return {
-    executable,
-    owner: fromWeb3JsPublicKey(owner),
-    lamports: { basisPoints: BigInt(lamports), identifier: "SOL", decimals: 9 },
-    rentEpoch: rentEpoch === undefined ? undefined : BigInt(rentEpoch),
-    publicKey,
-    data: new Uint8Array(data.buffer, data.byteOffset, data.byteLength),
-  };
-}
 
 export function useAccount<T extends object>(
   address: PublicKey,
@@ -64,7 +47,7 @@ export function useAccount<T extends object>(
 
       subscriptionId = umi.rpc.connection.onAccountChange(
         toWeb3JsPublicKey(address),
-        (accountInfo) => setRawAccount(rpcAccountFromWeb3Js(address, accountInfo)),
+        (accountInfo) => setRawAccount(fromWeb3JsAccountInfo(address, accountInfo)),
       );
     })();
 

@@ -1,13 +1,13 @@
 import { optimisticOracle } from "@/program-sdks/oracle";
 import { parimutuelResolver } from "@/program-sdks/par-resolver";
-import { dasApi, DasApiInterface } from "@metaplex-foundation/digital-asset-standard-api";
+import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
 import { mplToolbox } from "@metaplex-foundation/mpl-toolbox";
-import { RpcInterface, Umi } from "@metaplex-foundation/umi";
+import { Umi } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { FC, createContext, ReactNode, useContext } from "react";
 import { Connection } from "@solana/web3.js";
+import { createContext, FC, ReactNode, useContext } from "react";
 
 type Web3JsUmi = Umi & { rpc: { readonly connection: Connection } };
 

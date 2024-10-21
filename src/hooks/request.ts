@@ -7,11 +7,11 @@ import {
   RequestV1,
   RequestV1AccountData,
 } from "@/program-sdks/oracle";
+import { fromWeb3JsAccountInfo, toWeb3JsGpaFilter } from "@/utils/web3js-adapters";
 import { deserializeAccount, PublicKey } from "@metaplex-foundation/umi";
 import { fromWeb3JsPublicKey, toWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
-import { base58, Serializer } from "@metaplex-foundation/umi/serializers";
+import { Serializer } from "@metaplex-foundation/umi/serializers";
 import { useEffect, useReducer, useRef } from "react";
-import { rpcAccountFromWeb3Js } from "./account";
 
 /**
  * Off-chain request data.
@@ -71,24 +71,16 @@ export function useRequests(state: RequestState): ReadonlyMap<PublicKey, Request
       subscriptionId = umi.rpc.connection.onProgramAccountChange(
         toWeb3JsPublicKey(programId),
         ({ accountId, accountInfo }) => {
-          const rawAccount = rpcAccountFromWeb3Js(fromWeb3JsPublicKey(accountId), accountInfo);
-          const request = deserializeAccount(
+          const rawAccount = fromWeb3JsAccountInfo(fromWeb3JsPublicKey(accountId), accountInfo);
+          const account = deserializeAccount(
             rawAccount,
             (serializer.current ??= getRequestV1AccountDataSerializer()),
           );
 
-          updateAccounts(request);
+          updateAccounts(account);
         },
         undefined,
-        gpaBuilder.options.filters?.map((filter) => {
-          if ("memcmp" in filter) {
-            const { offset, bytes } = filter.memcmp;
-
-            return { memcmp: { offset, bytes: base58.deserialize(bytes)[0] } };
-          }
-
-          return filter;
-        }),
+        gpaBuilder.options.filters?.map(toWeb3JsGpaFilter),
       );
     })();
 
