@@ -9,7 +9,7 @@ import {
 } from "@metaplex-foundation/umi";
 import { toWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
 import { Serializer } from "@metaplex-foundation/umi/serializers";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useAccount<T extends object>(
   address: PublicKey,
@@ -17,10 +17,26 @@ export function useAccount<T extends object>(
 ): Account<T> | undefined {
   const umi = useUmi();
 
-  const [rawAccount, setRawAccount] = useState<RpcAccount>();
   const [account, setAccount] = useState<Account<T>>();
 
   const serializer = useRef<Serializer<T>>();
+
+  const setAccountFromRaw = useCallback(
+    (rawAccount: RpcAccount | undefined) => {
+      if (rawAccount === undefined || rawAccount.data.length === 0) {
+        setAccount(undefined);
+        return;
+      }
+
+      if (serializer.current === undefined) {
+        serializer.current =
+          typeof accountSerializer === "function" ? accountSerializer() : accountSerializer;
+      }
+
+      setAccount(deserializeAccount(rawAccount, serializer.current));
+    },
+    [accountSerializer],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -40,14 +56,14 @@ export function useAccount<T extends object>(
       }
 
       if (!account.exists) {
-        setRawAccount(undefined);
+        setAccountFromRaw(undefined);
         return;
       }
-      setRawAccount(account);
+      setAccountFromRaw(account);
 
       subscriptionId = umi.rpc.connection.onAccountChange(
         toWeb3JsPublicKey(address),
-        (accountInfo) => setRawAccount(fromWeb3JsAccountInfo(address, accountInfo)),
+        (accountInfo) => setAccountFromRaw(fromWeb3JsAccountInfo(address, accountInfo)),
       );
     })();
 
@@ -56,21 +72,10 @@ export function useAccount<T extends object>(
 
       if (subscriptionId !== undefined) {
         void umi.rpc.connection.removeAccountChangeListener(subscriptionId);
+        subscriptionId = undefined;
       }
     };
-  }, [address, umi.rpc]);
-
-  useEffect(() => {
-    if (rawAccount === undefined || rawAccount.data.length === 0) {
-      setAccount(undefined);
-      return;
-    }
-
-    serializer.current ??=
-      typeof accountSerializer === "function" ? accountSerializer() : accountSerializer;
-
-    setAccount(deserializeAccount(rawAccount, serializer.current));
-  }, [accountSerializer, rawAccount]);
+  }, [address, setAccountFromRaw, umi]);
 
   return account;
 }

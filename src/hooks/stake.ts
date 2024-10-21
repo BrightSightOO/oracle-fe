@@ -113,12 +113,14 @@ export function useStakes(): ReadonlyMap<PublicKey, StakeV1> {
 
       if (subscriptionIdOwner !== undefined) {
         void umi.rpc.connection.removeProgramAccountChangeListener(subscriptionIdOwner);
+        subscriptionIdOwner = undefined;
       }
       if (subscriptionIdDelegate !== undefined) {
         void umi.rpc.connection.removeProgramAccountChangeListener(subscriptionIdDelegate);
+        subscriptionIdDelegate = undefined;
       }
     };
-  }, [umi, umi.rpc]);
+  }, [umi, umi.identity.publicKey]);
 
   return accounts;
 }

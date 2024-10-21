@@ -89,9 +89,10 @@ export function useRequests(state: RequestState): ReadonlyMap<PublicKey, Request
 
       if (subscriptionId !== undefined) {
         void umi.rpc.connection.removeProgramAccountChangeListener(subscriptionId);
+        subscriptionId = undefined;
       }
     };
-  }, [state, umi, umi.rpc]);
+  }, [state, umi]);
 
   return accounts;
 }
