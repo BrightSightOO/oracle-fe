@@ -106,6 +106,17 @@ export async function fetchRequestData(
   }
 
   // TODO: Fetch and cache data.
+  const promise: Promise<RequestData> = fetch("...").then((res) => res.json());
+
+  requestDataCache.set(request.publicKey, promise);
+
+  try {
+    const data = await promise;
+    requestDataCache.set(request.publicKey, data);
+  } catch (err) {
+    requestDataCache.delete(request.publicKey);
+    throw err;
+  }
 
   return { title: "Unknown", description: "..." };
 }

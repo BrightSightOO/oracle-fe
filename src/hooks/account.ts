@@ -14,17 +14,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export function useAccount<T extends object>(
   address: PublicKey,
   accountSerializer: Serializer<T> | (() => Serializer<T>),
-): Account<T> | undefined {
+): Account<T> | null | undefined {
   const umi = useUmi();
 
-  const [account, setAccount] = useState<Account<T>>();
+  const [account, setAccount] = useState<Account<T> | null>();
 
   const serializer = useRef<Serializer<T>>();
 
   const setAccountFromRaw = useCallback(
-    (rawAccount: RpcAccount | undefined) => {
-      if (rawAccount === undefined || rawAccount.data.length === 0) {
-        setAccount(undefined);
+    (rawAccount: RpcAccount | null) => {
+      if (rawAccount === null || rawAccount.data.length === 0) {
+        setAccount(null);
         return;
       }
 
@@ -56,7 +56,7 @@ export function useAccount<T extends object>(
       }
 
       if (!account.exists) {
-        setAccountFromRaw(undefined);
+        setAccountFromRaw(null);
         return;
       }
       setAccountFromRaw(account);

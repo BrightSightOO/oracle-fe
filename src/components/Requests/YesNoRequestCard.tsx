@@ -80,14 +80,11 @@ const YesNoRequestCard = ({ request, data }: Props) => {
 
   const umi = useUmi();
 
-  const [assertionPda] = useMemo(
-    () => findAssertionV1Pda(umi, { request: request.publicKey, round: request.round }),
-    [request.publicKey, request.round, umi],
-  );
-  const [votingPda] = useMemo(
-    () => findVotingV1Pda(umi, { assertion: assertionPda }),
-    [assertionPda, umi],
-  );
+  const [assertionPda] = findAssertionV1Pda(umi, {
+    request: request.publicKey,
+    round: request.round,
+  });
+  const [votingPda] = findVotingV1Pda(umi, { assertion: assertionPda });
 
   const assertion = useAccount(assertionPda, getAssertionV1AccountDataSerializer);
   const voting = useAccount(votingPda, getVotingV1AccountDataSerializer);
