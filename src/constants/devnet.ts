@@ -1,13 +1,11 @@
 import { NATIVE_MINT } from '@solana/spl-token';
 import { PublicKey } from '@solana/web3.js';
 
-export const QUOTE_TOKEN = new PublicKey(
-  '3aMbgP7aGsP1sVcFKc6j65zu7UiziP57SMFzf6ptiCSX'
-);
+export const ORACLE_PROGRAM = new PublicKey('DVM3hK9SDgXLmVoLng1KrTJCzTnhw31hAnqTYP7uGCot');
 
-export const HOGP_TOKEN = new PublicKey(
-  'HogPo6FEJLBuovJ1suCTw3Yb42i74gnN4KWk1oGHsuqL'
-);
+export const QUOTE_TOKEN = new PublicKey('3aMbgP7aGsP1sVcFKc6j65zu7UiziP57SMFzf6ptiCSX');
+
+export const HOGP_TOKEN = new PublicKey('HogPo6FEJLBuovJ1suCTw3Yb42i74gnN4KWk1oGHsuqL');
 
 export const MINT_PUBKEY_TO_DECIMAL = {
   [NATIVE_MINT.toBase58()]: 9,
