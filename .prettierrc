@@ -1,7 +1,18 @@
 {
-  "printWidth": 100,
-  "semi": true,
   "singleQuote": true,
+  "jsxSingleQuote": true,
   "trailingComma": "all",
-  "arrowParens": "always"
+  "bracketSpacing": true,
+  "printWidth": 80,
+
+  "importOrder": [
+    "^lodash(.*)$",
+    "^react(.*)$",
+    "^next(.*)$",
+    "^@solana/(.*)$",
+    "^@project-serum/(.*)$",
+    "^@chakra-ui/(.*)$",
+    ".*"
+  ],
+  "importOrderSortSpecifiers": true
 }

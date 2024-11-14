@@ -3,7 +3,10 @@ import { BASE_URL } from '@/constants/common';
 import { getClusterConstants } from '@/constants/index';
 import { useUmi } from '@/context/UmiProvider';
 import useViewExplorerCallback from '@/hooks/useViewExplorerCallback';
-import { buildAndSendOptimized, extractTxSig } from '@/program-sdks/common/transaction';
+import {
+  buildAndSendOptimized,
+  extractTxSig,
+} from '@/program-sdks/common/transaction';
 import {
   AssertionV1,
   disputeAssertionV1,
@@ -15,11 +18,15 @@ import {
 import { MainColorSet } from '@/theme/types';
 import { shareTweet } from '@/utils/share';
 import { HStack, Text, useTheme, VStack } from '@chakra-ui/react';
-import { createAmount, displayAmount, transactionBuilder } from '@metaplex-foundation/umi';
+import {
+  createAmount,
+  displayAmount,
+  transactionBuilder,
+} from '@metaplex-foundation/umi';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useMemo, useState } from 'react';
 
-const AssertionModal = ({
+const ClaimDisputeModal = ({
   request,
   assertion,
   bondAmount,
@@ -52,9 +59,9 @@ const AssertionModal = ({
 
   const actionText = () => {
     return (
-      <Text textStyle="Body">
+      <Text textStyle='Body'>
         {displayAmount(bondCreateAmount, 2)} on
-        <Text textStyle="Body" mx="5px" as="span" color={greenPrimary}>
+        <Text textStyle='Body' mx='5px' as='span' color={greenPrimary}>
           {option}
         </Text>
       </Text>
@@ -62,7 +69,10 @@ const AssertionModal = ({
   };
 
   const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[request.rewardMint] ?? 0;
-  const bondCreateAmount = useMemo(() => createAmount(bondAmount, '$', tokenDecimal), [bondAmount]);
+  const bondCreateAmount = useMemo(
+    () => createAmount(bondAmount, '$', tokenDecimal),
+    [bondAmount],
+  );
 
   const handleConfirm = async () => {
     if (!wallet?.publicKey) {
@@ -77,7 +87,10 @@ const AssertionModal = ({
         throw Error('Request does not exist');
       }
 
-      const refreshedAssertion = await safeFetchAssertionV1(umi, assertion.publicKey);
+      const refreshedAssertion = await safeFetchAssertionV1(
+        umi,
+        assertion.publicKey,
+      );
 
       if (!refreshedAssertion) {
         throw Error('Assertion does not exist');
@@ -120,8 +133,8 @@ const AssertionModal = ({
 
   return (
     <ModalWrapper
-      header=""
-      buttonText="Confirm"
+      header=''
+      buttonText='Confirm'
       onClickMain={handleConfirm}
       onShare={onShare}
       actionText={actionText()}
@@ -129,15 +142,21 @@ const AssertionModal = ({
       onBack={onBack}
       onViewExplorer={() => onViewExplorer && onViewExplorer()}
     >
-      <VStack alignItems="center" mt="40px">
-        <Text textStyle="H3" fontWeight="500">
+      <VStack alignItems='center' mt='40px'>
+        <Text textStyle='H3' fontWeight='500'>
           Confirm Transaction
         </Text>
-        <VStack justifyContent="space-between" w="261px" mt="41px">
-          <HStack justifyContent="space-between" mb="20px">
-            <Text textStyle="Body" noOfLines={1}>
+        <VStack justifyContent='space-between' w='261px' mt='41px'>
+          <HStack justifyContent='space-between' mb='20px'>
+            <Text textStyle='Body' noOfLines={1}>
               Dispute Assertion {displayAmount(bondCreateAmount, 2)} on
-              <Text as="span" px="2" textStyle="Body" fontWeight="bold" color={greenPrimary}>
+              <Text
+                as='span'
+                px='2'
+                textStyle='Body'
+                fontWeight='bold'
+                color={greenPrimary}
+              >
                 {option}
               </Text>
             </Text>
@@ -148,4 +167,4 @@ const AssertionModal = ({
   );
 };
 
-export default AssertionModal;
+export default ClaimDisputeModal;

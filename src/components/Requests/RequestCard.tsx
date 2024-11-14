@@ -1,4 +1,5 @@
 import { useUmi } from '@/context/UmiProvider';
+import { AssertionV1, VotingV1, YesNoValue } from '@/program-sdks/oracle';
 import { MainColorSet } from '@/theme/types';
 import { formatDate } from '@/utils/time';
 import {
@@ -22,6 +23,12 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMemo } from 'react';
 
+type ActionValues = {
+  mainText: string;
+  actionButtonText: string;
+  buttons: string[] | YesNoValue[];
+} | null;
+
 type RequestCardProps = {
   //request: RequestV1 & { kind: RequestKind.YesNo };
   state: string;
@@ -31,6 +38,11 @@ type RequestCardProps = {
     name: string;
     value: string;
   }[];
+  options: string[];
+  assertedAnswer: YesNoValue | undefined;
+  timestamp: string;
+  assertion: AssertionV1 | undefined;
+  voting: VotingV1 | undefined;
 };
 
 enum RequestStateText {
@@ -40,7 +52,17 @@ enum RequestStateText {
   Resolved = 'Resolved',
 }
 
-const RequestCard = ({ state, title, description, additionalInfo }: RequestCardProps) => {
+const RequestCard = ({
+  state,
+  title,
+  description,
+  additionalInfo,
+  options,
+  assertedAnswer,
+  timestamp,
+  assertion,
+  voting,
+}: RequestCardProps) => {
   const {
     colors: {
       bluePrimary,
@@ -56,8 +78,6 @@ const RequestCard = ({ state, title, description, additionalInfo }: RequestCardP
 
   const { isOpen, onToggle } = useDisclosure();
 
-  const umi = useUmi();
-
   const actionValues: ActionValues = useMemo(() => {
     switch (state) {
       case RequestStateText.Requested:
@@ -66,22 +86,34 @@ const RequestCard = ({ state, title, description, additionalInfo }: RequestCardP
           actionButtonText: 'Submit',
           buttons: options,
         };
-      case 'Provided':
+      case RequestStateText.Asserted:
         return {
           mainText: 'Answer',
           actionButtonText: 'Dispute',
-          buttons: answer,
+          buttons: assertedAnswer ? [assertedAnswer] : [],
         };
-      case 'Disputed':
+      case RequestStateText.Disputed:
         return {
           mainText: 'Vote correct answer',
           actionButtonText: 'Submit',
-          buttons: options,
+          buttons: [...options, 'Not enough data'],
         };
       default:
         return null;
     }
-  }, [status, options, answer]);
+  }, [state, options, assertedAnswer]);
+
+  const renderActionButton = () => {
+    if (actionValues) {
+      return (
+        <Stack w="full" justifyContent="flex-end">
+          <Button w={{ base: 'full', md: '150px' }} bg={greenBrightSight} color={textPrimary}>
+            {actionValues.actionButtonText}
+          </Button>
+        </Stack>
+      );
+    }
+  };
 
   return (
     <VStack w="full" bg={backgroundCard} borderRadius="lg" boxShadow={isOpen ? 'xl' : 'lg'}>
@@ -92,7 +124,7 @@ const RequestCard = ({ state, title, description, additionalInfo }: RequestCardP
             <HStack gap={1}>
               <FontAwesomeIcon icon={faClock} color={bluePrimary} width="16px" />
               <Text textStyle="H6" fontWeight="500" color={textGrey}>
-                {formatDate(request.assertionTimestamp)}
+                {timestamp}
               </Text>
             </HStack>
             <HStack gap={1}>
@@ -148,28 +180,27 @@ const RequestCard = ({ state, title, description, additionalInfo }: RequestCardP
               ))}
             </HStack>
           </VStack>
-          {state !== RequestStateText.Resolved && actionValues ? (
+          {actionValues ? (
             <VStack w="full" p="24px" align="flex-start" bg={backgroundMain}>
               <Text textStyle="Body" fontWeight="600" color={textPrimary}>
                 {actionValues.mainText}
               </Text>
               <HStack w="full">
-                {actionValues.buttons
-                  ? actionValues.buttons.map((option, idx) => {
-                      const colorOption = idx === 0 ? greenPrimary : pinkPrimary;
+                {actionValues.buttons.length
+                  ? actionValues.buttons.map((option) => {
                       return (
                         <Button
                           key={option}
                           w="full"
-                          bg={`${colorOption}1A`}
-                          border={`1px solid ${colorOption}`}
-                          color={colorOption}
+                          bg={`${backgroundMain}1A`}
+                          border={`1px solid ${backgroundMain}`}
+                          color={backgroundMain}
                           _hover={{
-                            bg: colorOption,
+                            bg: backgroundMain,
                             color: textPrimary,
                           }}
                           _selected={{
-                            bg: colorOption,
+                            bg: greenPrimary,
                             color: textPrimary,
                           }}
                         >
@@ -178,12 +209,24 @@ const RequestCard = ({ state, title, description, additionalInfo }: RequestCardP
                       );
                     })
                   : null}
-              </HStack>
-              <Stack w="full" justifyContent="flex-end">
-                <Button w={{ base: 'full', md: '150px' }} bg={greenBrightSight} color={textPrimary}>
-                  Submit
+                <Button
+                  w="full"
+                  bg={`${backgroundMain}1A`}
+                  border={`1px solid ${backgroundMain}`}
+                  color={backgroundMain}
+                  _hover={{
+                    bg: backgroundMain,
+                    color: textPrimary,
+                  }}
+                  _selected={{
+                    bg: greenPrimary,
+                    color: textPrimary,
+                  }}
+                >
+                  Not enough data
                 </Button>
-              </Stack>
+              </HStack>
+              {renderActionButton()}
             </VStack>
           ) : null}
         </VStack>

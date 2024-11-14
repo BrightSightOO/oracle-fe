@@ -1,6 +1,13 @@
 import { getTokenAmount } from '@/constants/mints';
 import { useOracleAccounts } from '@/context/OracleProvider';
-import { AssertionV1, RequestState, RequestV1, VotingV1, YesNoValue } from '@/program-sdks/oracle';
+import {
+  AssertionV1,
+  RequestKind,
+  RequestState,
+  RequestV1,
+  VotingV1,
+  YesNoValue,
+} from '@/program-sdks/oracle';
 import { prettyAmount } from '@/utils/amount';
 import { formatDate } from '@/utils/time';
 import { VStack } from '@chakra-ui/react';
@@ -17,10 +24,18 @@ const RequestList = ({ data }: { data: RequestV1[] }) => {
 
     const state = RequestState[request.state];
 
-    const additionalInfo = getAdditionalInfo({ request, state, assertion, voting });
+    const { additionalInfo, assertedValue, timestamp } = getAdditionalInfo({
+      request,
+      state,
+      assertion,
+      voting,
+    });
 
     const title = '';
     const description = '';
+
+    const options =
+      request.kind === RequestKind.YesNo ? ['Yes', 'No', 'Invalid'] : [];
 
     return (
       <RequestCard
@@ -29,12 +44,19 @@ const RequestList = ({ data }: { data: RequestV1[] }) => {
         title={title}
         description={description}
         additionalInfo={additionalInfo}
+        options={options}
+        timestamp={timestamp}
+        assertedAnswer={assertedValue}
+        assertion={assertion}
+        voting={voting}
       />
     );
   };
 
   return (
-    <VStack w="full">{data ? data.map((request) => renderRequestCard(request)) : null}</VStack>
+    <VStack w='full'>
+      {data ? data.map((request) => renderRequestCard(request)) : null}
+    </VStack>
   );
 };
 
@@ -59,8 +81,9 @@ const getAdditionalInfo = ({
     { name: 'State', value: state },
   ];
 
-  if (assertion !== undefined) {
-    const assertedValue = decodeYesNoValue(assertion.assertedValue);
+  let assertedValue: YesNoValue | undefined;
+  if (assertion) {
+    assertedValue = decodeYesNoValue(assertion.assertedValue);
 
     additionalInfo.push(
       { name: 'Asserted Value', value: YesNoValue[assertedValue] },
@@ -73,7 +96,7 @@ const getAdditionalInfo = ({
         name: 'Resolved Value',
         value: YesNoValue[decodeYesNoValue(request.value)],
       });
-    } else if (voting === undefined) {
+    } else if (!voting) {
       additionalInfo.push(
         { name: 'Disputer', value: assertion.disputer },
         {
@@ -91,7 +114,7 @@ const getAdditionalInfo = ({
       timestamp = formatTs;
     }
   }
-  return additionalInfo;
+  return { additionalInfo, timestamp, assertedValue };
 };
 
 function decodeYesNoValue(value: number | bigint): YesNoValue {
