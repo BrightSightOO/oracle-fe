@@ -13,23 +13,33 @@ export default function Home() {
 
   return (
     <HStack
-      w="full"
-      mx="auto"
+      w='full'
+      mx='auto'
       px={{ base: '16px', md: '36px' }}
       bg={backgroundMain}
-      align="start"
-      justify="flex-start"
+      align='start'
+      justify='flex-start'
     >
-      <Head id="BrightSight">
+      <Head id='BrightSight'>
         <title>BrightSight - Home</title>
       </Head>
-      <HStack w="full" mx="auto" maxW="1512px" py="50px" gap={10} justifyContent="space-between">
+      <HStack
+        w='full'
+        mx='auto'
+        maxW='1512px'
+        py='50px'
+        gap={10}
+        justifyContent='space-between'
+      >
         <Requests stakingToggle={stakeModal.onToggle} />
-        <Show above="md">
+        <Show above='md'>
           <Stake />
         </Show>
-        <Show below="md">
-          <StakingBottomSheet isOpen={stakeModal.isOpen} onClose={stakeModal.onClose} />
+        <Show below='md'>
+          <StakingBottomSheet
+            isOpen={stakeModal.isOpen}
+            onClose={stakeModal.onClose}
+          />
         </Show>
       </HStack>
     </HStack>

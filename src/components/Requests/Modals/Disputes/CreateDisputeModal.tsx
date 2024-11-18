@@ -8,10 +8,8 @@ import {
   extractTxSig,
 } from '@/program-sdks/common/transaction';
 import {
-  AssertionV1,
   disputeAssertionV1,
   DisputeAssertionV1InstructionAccounts,
-  RequestV1,
   safeFetchAssertionV1,
   safeFetchRequestV1,
 } from '@/program-sdks/oracle';
@@ -21,6 +19,7 @@ import { HStack, Text, useTheme, VStack } from '@chakra-ui/react';
 import {
   createAmount,
   displayAmount,
+  PublicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -30,14 +29,16 @@ const CreateDisputeModal = ({
   request,
   assertion,
   bondAmount,
+  bondMint,
   option,
   onClose,
   onBack,
   onSuccess,
 }: {
-  request: RequestV1;
-  assertion: AssertionV1;
+  request: PublicKey;
+  assertion: PublicKey;
   bondAmount: number | bigint;
+  bondMint: PublicKey;
   option: number;
   onClose: () => void;
   onSuccess: () => void;
@@ -68,7 +69,7 @@ const CreateDisputeModal = ({
     );
   };
 
-  const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[request.rewardMint] ?? 0;
+  const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[bondMint] ?? 0;
   const bondCreateAmount = useMemo(
     () => createAmount(bondAmount, '$', tokenDecimal),
     [bondAmount],
@@ -81,16 +82,13 @@ const CreateDisputeModal = ({
 
     let builder = transactionBuilder();
     try {
-      const refreshedRequest = await safeFetchRequestV1(umi, request.publicKey);
+      const refreshedRequest = await safeFetchRequestV1(umi, request);
 
       if (!refreshedRequest) {
         throw Error('Request does not exist');
       }
 
-      const refreshedAssertion = await safeFetchAssertionV1(
-        umi,
-        assertion.publicKey,
-      );
+      const refreshedAssertion = await safeFetchAssertionV1(umi, assertion);
 
       if (!refreshedAssertion) {
         throw Error('Assertion does not exist');
@@ -99,9 +97,9 @@ const CreateDisputeModal = ({
       const params: DisputeAssertionV1InstructionAccounts = {
         // TODO: Create config
         config: ORACLE_PROGRAM,
-        request: request.publicKey,
-        assertion: assertion.publicKey,
-        bondMint: request.bondMint,
+        request,
+        assertion,
+        bondMint,
       };
 
       builder = builder.add(disputeAssertionV1(umi, params));
@@ -126,7 +124,7 @@ const CreateDisputeModal = ({
   };
 
   const onShare = () => {
-    const shareURL = `${BASE_URL}/${request.publicKey}`;
+    const shareURL = `${BASE_URL}/${request}`;
     const content = `Place your prediction on @HedgehogMarket: ${shareURL}`;
     shareTweet(content);
   };

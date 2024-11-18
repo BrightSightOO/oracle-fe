@@ -5,16 +5,78 @@ import {
   RequestKind,
   RequestState,
   RequestV1,
+  StakeV1,
   VotingV1,
   YesNoValue,
 } from '@/program-sdks/oracle';
 import { prettyAmount } from '@/utils/amount';
 import { formatDate } from '@/utils/time';
-import { VStack } from '@chakra-ui/react';
+import { useDisclosure, VStack } from '@chakra-ui/react';
 import RequestCard from './RequestCard';
+import { useState } from 'react';
+import { PublicKey } from '@metaplex-foundation/umi';
+import ModalContainer from '../Shared/Modal/ModalContainer';
+
+type RequestModalAction = 'assertion' | 'dispute' | 'vote';
 
 const RequestList = ({ data }: { data: RequestV1[] }) => {
   const { requestToAssertionMap, assertionToVotingMap } = useOracleAccounts();
+
+  const [selectedRequestKey, setSelectedRequestKey] = useState();
+
+  const allModal = useDisclosure();
+  const assertionModal = useDisclosure();
+  const disputeModal = useDisclosure();
+  const voteModal = useDisclosure();
+  const resolveModal = useDisclosure();
+
+  const [modalInfo, setModalInfo] = useState<{
+    action: RequestModalAction;
+    request: RequestV1;
+    assertion: AssertionV1;
+    voting: VotingV1;
+    stake: StakeV1;
+    bondAmount: number | bigint;
+    option: number;
+  }>();
+
+  // Resolve
+  const [outcomeInfo, setOutcomeInfo] = useState<{
+    outcome: number;
+    outcomeText: string;
+    marketMint: PublicKey;
+  }>();
+
+  // Assertion
+  const [assertionInfo, setAssertionInfo] = useState<
+    | {
+        title: string;
+        mint: PublicKey;
+        userPositions: UserPositionV1[];
+        isMarketInvalid: boolean;
+        creator: PublicKey;
+      }
+    | undefined
+  >(undefined);
+
+  // Dispute
+  const [disputeInfo, setDisputeInfo] = useState<
+    | {
+        title: string;
+        mint: PublicKey;
+        userPositions: UserPositionV1[];
+        isMarketInvalid: boolean;
+        creator: PublicKey;
+      }
+    | undefined
+  >(undefined);
+
+  // Vote
+  const [voteInfo, setVoteInfo] = useState<{
+    outcome: number;
+    outcomeText: string;
+    marketMint: PublicKey;
+  }>();
 
   const renderRequestCard = (request: RequestV1) => {
     if (!request) return null;
@@ -53,8 +115,29 @@ const RequestList = ({ data }: { data: RequestV1[] }) => {
     );
   };
 
+  // Reset modal and selected state
+  const handleModalClose = () => {
+    allModal.isOpen && allModal.onClose();
+    setSelectedRequestKey(undefined);
+    // setOutcomeInfo(undefined);
+    // setAssertionInfo(undefined);
+    setModalInfo(undefined);
+  };
+
   return (
     <VStack w='full'>
+      {selectedRequestKey && modalInfo && resolveModal.isOpen && (
+        <ModalContainer isOpen={allModal.isOpen} onClose={handleModalClose}>
+          <ResolveModal
+            marketAddress={selectedMarketKey}
+            outcome={outcomeInfo.outcome}
+            marketMint={outcomeInfo.marketMint}
+            outcomeText={outcomeInfo.outcomeText}
+            onClose={handleModalClose}
+            onSuccess={() => fetchRefreshAccounts(selectedRequestKey, [])}
+          />
+        </ModalContainer>
+      )}
       {data ? data.map((request) => renderRequestCard(request)) : null}
     </VStack>
   );

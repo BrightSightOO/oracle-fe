@@ -8,10 +8,8 @@ import {
   extractTxSig,
 } from '@/program-sdks/common/transaction';
 import {
-  AssertionV1,
   claimAssertionV1,
   ClaimAssertionV1InstructionAccounts,
-  RequestV1,
   safeFetchAssertionV1,
 } from '@/program-sdks/oracle';
 import { MainColorSet } from '@/theme/types';
@@ -20,6 +18,7 @@ import { HStack, Text, useTheme, VStack } from '@chakra-ui/react';
 import {
   createAmount,
   displayAmount,
+  PublicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -28,15 +27,17 @@ import { useMemo, useState } from 'react';
 const ClaimAssertionModal = ({
   request,
   assertion,
-  rewardAmount,
+  reward,
+  rewardMint,
   option,
   onClose,
   onBack,
   onSuccess,
 }: {
-  request: RequestV1;
-  assertion: AssertionV1;
-  rewardAmount: number | bigint;
+  request: PublicKey;
+  assertion: PublicKey;
+  reward: number | bigint;
+  rewardMint: PublicKey;
   option: number;
   onClose: () => void;
   onSuccess: () => void;
@@ -67,10 +68,10 @@ const ClaimAssertionModal = ({
     );
   };
 
-  const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[request.rewardMint] ?? 0;
+  const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[rewardMint] ?? 0;
   const rewardCreateAmount = useMemo(
-    () => createAmount(rewardAmount, '$', tokenDecimal),
-    [rewardAmount],
+    () => createAmount(reward, '$', tokenDecimal),
+    [reward],
   );
 
   const handleConfirm = async () => {
@@ -80,10 +81,7 @@ const ClaimAssertionModal = ({
 
     let builder = transactionBuilder();
     try {
-      const refreshedAssertion = await safeFetchAssertionV1(
-        umi,
-        assertion.publicKey,
-      );
+      const refreshedAssertion = await safeFetchAssertionV1(umi, assertion);
 
       if (!refreshedAssertion) {
         throw Error('Assertion does not exist');

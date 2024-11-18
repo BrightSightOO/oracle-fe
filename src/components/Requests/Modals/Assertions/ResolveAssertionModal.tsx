@@ -8,15 +8,13 @@ import {
   extractTxSig,
 } from '@/program-sdks/common/transaction';
 import {
-  AssertionV1,
-  RequestV1,
   resolveAssertionV1,
   ResolveAssertionV1InstructionAccounts,
   safeFetchAssertionV1,
 } from '@/program-sdks/oracle';
 import { shareTweet } from '@/utils/share';
 import { HStack, Text, VStack } from '@chakra-ui/react';
-import { transactionBuilder } from '@metaplex-foundation/umi';
+import { PublicKey, transactionBuilder } from '@metaplex-foundation/umi';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
 
@@ -27,9 +25,8 @@ const ResolveAssertionModal = ({
   onBack,
   onSuccess,
 }: {
-  request: RequestV1;
-  assertion: AssertionV1;
-  bondAmount: number | bigint;
+  request: PublicKey;
+  assertion: PublicKey;
   option: number;
   onClose: () => void;
   onSuccess: () => void;
@@ -63,8 +60,8 @@ const ResolveAssertionModal = ({
       const params: ResolveAssertionV1InstructionAccounts = {
         // TODO: Create config
         config: ORACLE_PROGRAM,
-        request: request.publicKey,
-        assertion: assertion.publicKey,
+        request,
+        assertion,
       };
 
       builder = builder.add(resolveAssertionV1(umi, params));

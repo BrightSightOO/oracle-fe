@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import Staking from './Staking';
+import { useQuoteAccount } from '@/context/QuoteAccountProvider';
 
 const unlocks = [
   { amount: 500, date: '12 Sep 2024 18:23' },
@@ -32,6 +33,8 @@ const Stake = () => {
     greyLight2,
     greenBrightSight,
   } = colors as MainColorSet;
+
+  const { userUSDCBalance } = useQuoteAccount();
 
   const [mode, setMode] = useState(StakeMode.STAKE);
 
@@ -63,7 +66,7 @@ const Stake = () => {
             fontSize={{ base: '10px', xmd: '14px' }}
             color={greenBrightSight}
           >
-            12.312 OO Staked
+            {userUSDCBalance} OO Staked
           </Text>
         </Box>
       </HStack>

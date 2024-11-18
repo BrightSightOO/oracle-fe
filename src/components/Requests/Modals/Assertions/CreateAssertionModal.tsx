@@ -8,19 +8,19 @@ import {
   extractTxSig,
 } from '@/program-sdks/common/transaction';
 import {
-  AssertionV1,
   createAssertionV1,
   CreateAssertionV1InstructionAccounts,
   CreateAssertionV1InstructionDataArgs,
-  RequestV1,
   safeFetchAssertionV1,
 } from '@/program-sdks/oracle';
+ß;
 import { MainColorSet } from '@/theme/types';
 import { shareTweet } from '@/utils/share';
 import { HStack, Text, useTheme, VStack } from '@chakra-ui/react';
 import {
   createAmount,
   displayAmount,
+  PublicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -30,14 +30,16 @@ const CreateAssertionModal = ({
   request,
   assertion,
   bondAmount,
+  bondMint,
   option,
   onClose,
   onBack,
   onSuccess,
 }: {
-  request: RequestV1;
-  assertion: AssertionV1;
+  request: PublicKey;
+  assertion: PublicKey;
   bondAmount: number | bigint;
+  bondMint: PublicKey;
   option: number;
   onClose: () => void;
   onSuccess: () => void;
@@ -68,7 +70,7 @@ const CreateAssertionModal = ({
     );
   };
 
-  const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[request.bondMint] ?? 0;
+  const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[bondMint] ?? 0;
   const bondCreateAmount = useMemo(
     () => createAmount(bondAmount, '$', tokenDecimal),
     [bondAmount],
@@ -81,10 +83,7 @@ const CreateAssertionModal = ({
 
     let builder = transactionBuilder();
     try {
-      const refreshedAssertion = await safeFetchAssertionV1(
-        umi,
-        assertion.publicKey,
-      );
+      const refreshedAssertion = await safeFetchAssertionV1(umi, assertion);
 
       if (!refreshedAssertion) {
         throw Error('Assertion does not exist');
@@ -93,9 +92,9 @@ const CreateAssertionModal = ({
       const params: CreateAssertionV1InstructionAccounts &
         CreateAssertionV1InstructionDataArgs = {
         config: ORACLE_PROGRAM,
-        request: request.publicKey,
-        assertion: assertion.publicKey,
-        bondMint: request.bondMint,
+        request,
+        assertion,
+        bondMint,
         value: option,
       };
 

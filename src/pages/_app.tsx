@@ -1,20 +1,23 @@
-import Header from "@/components/Navigation/Header";
-import { ClusterContextProvider } from "@/context/cluster";
-import { OracleAccountsProvider } from "@/context/OracleProvider";
-import { ThemeContextProvider } from "@/context/ThemeProvider";
-import "@/styles/fonts.css";
-import { MainColorSet } from "@/theme/types";
-import { Box, Flex, useTheme } from "@chakra-ui/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { AppProps } from "next/app";
-import dynamic from "next/dynamic";
-import Head from "next/head";
-import { ReactNode, useState } from "react";
-import "../styles/globals.css";
+import Header from '@/components/Navigation/Header';
+import { ClusterContextProvider } from '@/context/cluster';
+import { OracleAccountsProvider } from '@/context/OracleProvider';
+import { ThemeContextProvider } from '@/context/ThemeProvider';
+import '@/styles/fonts.css';
+import { MainColorSet } from '@/theme/types';
+import { Box, Flex, useTheme } from '@chakra-ui/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
+import Head from 'next/head';
+import { ReactNode, useState } from 'react';
+import '../styles/globals.css';
 
-const WalletConnectionProvider = dynamic(() => import("../context/WalletConnectionProvider"), {
-  ssr: false,
-});
+const WalletConnectionProvider = dynamic(
+  () => import('../context/WalletConnectionProvider'),
+  {
+    ssr: false,
+  },
+);
 
 const client = new QueryClient({
   defaultOptions: {
@@ -38,7 +41,10 @@ type ChildrenType = {
 const buildProvidersTree = (componentsWithProps: Array<ProvidersType>) => {
   const initialComponent = ({ children }: ChildrenType) => <>{children}</>;
   return componentsWithProps.reduce(
-    (AccumulatedComponents: React.ElementType, [Provider, props = {}]: ProvidersType) => {
+    (
+      AccumulatedComponents: React.ElementType,
+      [Provider, props = {}]: ProvidersType,
+    ) => {
       // eslint-disable-next-line react/display-name
       return ({ children }: ChildrenType) => {
         return (
@@ -56,6 +62,7 @@ const ProvidersTree = buildProvidersTree([
   [ThemeContextProvider, {}],
   [ClusterContextProvider, {}],
   [WalletConnectionProvider, {}],
+  [QueryClientProvider, {}],
   [ReactQueryProvider, {}],
   [OracleAccountsProvider, {}],
 ]);
@@ -68,18 +75,18 @@ function ThemeBox({ children }: { children: ReactNode }) {
 }
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [favicon, setFavicon] = useState("/favicon-light.ico");
+  const [favicon, setFavicon] = useState('/favicon-light.ico');
 
   return (
     <>
       <Head>
-        <link rel="icon" href={favicon} />
+        <link rel='icon' href={favicon} />
         <title>Bright Sight</title>
       </Head>
       <ProvidersTree>
         <ThemeBox>
           <Header />
-          <Flex minH="calc(100vh - 66px)">
+          <Flex minH='calc(100vh - 66px)'>
             <Component {...pageProps} />
           </Flex>
         </ThemeBox>

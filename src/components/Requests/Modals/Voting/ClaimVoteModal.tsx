@@ -10,19 +10,13 @@ import {
 import {
   claimVoteV1,
   ClaimVoteV1InstructionAccounts,
-  ClaimVoteV1InstructionDataArgs,
   findDisputeBondPda,
-  RequestV1,
   safeFetchVotingV1,
-  StakeV1,
-  submitVoteV1,
-  SubmitVoteV1InstructionAccounts,
-  SubmitVoteV1InstructionDataArgs,
   VotingV1,
 } from '@/program-sdks/oracle';
 import { shareTweet } from '@/utils/share';
 import { HStack, Text, VStack } from '@chakra-ui/react';
-import { transactionBuilder } from '@metaplex-foundation/umi';
+import { PublicKey, transactionBuilder } from '@metaplex-foundation/umi';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
 
@@ -30,13 +24,15 @@ const ClaimVoteModal = ({
   request,
   voting,
   stake,
+  bondMint,
   onClose,
   onBack,
   onSuccess,
 }: {
-  request: RequestV1;
+  request: PublicKey;
   voting: VotingV1;
-  stake: StakeV1;
+  stake: PublicKey;
+  bondMint: PublicKey;
   onClose: () => void;
   onSuccess: () => void;
   onBack?: () => void;
@@ -64,17 +60,17 @@ const ClaimVoteModal = ({
       }
 
       const bondEscrow = findDisputeBondPda(umi, {
-        request: request.publicKey,
+        request: request,
       });
 
       const params: ClaimVoteV1InstructionAccounts = {
         // TODO: Create config
         //config: ORACLE_PROGRAM,
-        request: request.publicKey,
+        request,
         assertion: voting.assertion,
         voting: voting.publicKey,
-        stake: stake.publicKey,
-        bondMint: request.bondMint,
+        stake,
+        bondMint,
         bondEscrow,
       };
 

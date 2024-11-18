@@ -21,6 +21,7 @@ import { HStack, Text, useTheme, VStack } from '@chakra-ui/react';
 import {
   createAmount,
   displayAmount,
+  PublicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -30,14 +31,17 @@ const ClaimDisputeModal = ({
   request,
   assertion,
   bondAmount,
+  rewardMint,
   option,
   onClose,
   onBack,
   onSuccess,
 }: {
-  request: RequestV1;
-  assertion: AssertionV1;
+  request: PublicKey;
+  assertion: PublicKey;
   bondAmount: number | bigint;
+  bondMint: PublicKey;
+  rewardMint: PublicKey;
   option: number;
   onClose: () => void;
   onSuccess: () => void;
@@ -68,7 +72,7 @@ const ClaimDisputeModal = ({
     );
   };
 
-  const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[request.rewardMint] ?? 0;
+  const tokenDecimal = MINT_PUBKEY_TO_DECIMAL[rewardMint] ?? 0;
   const bondCreateAmount = useMemo(
     () => createAmount(bondAmount, '$', tokenDecimal),
     [bondAmount],
@@ -81,7 +85,7 @@ const ClaimDisputeModal = ({
 
     let builder = transactionBuilder();
     try {
-      const refreshedRequest = await safeFetchRequestV1(umi, request.publicKey);
+      const refreshedRequest = await safeFetchRequestV1(umi, request);
 
       if (!refreshedRequest) {
         throw Error('Request does not exist');
@@ -99,9 +103,9 @@ const ClaimDisputeModal = ({
       const params: DisputeAssertionV1InstructionAccounts = {
         // TODO: Create config
         config: ORACLE_PROGRAM,
-        request: request.publicKey,
-        assertion: assertion.publicKey,
-        bondMint: request.bondMint,
+        request,
+        assertion,
+        bondMint,
       };
 
       builder = builder.add(disputeAssertionV1(umi, params));
