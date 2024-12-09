@@ -35,6 +35,7 @@ const STROKE_GREY = '#D7E4FF';
 const CARD_BACKGROUND = '#292D32';
 const PRIMARY_RED = '#FF3D00';
 const PRIMARY_GREEN = '#00D495';
+const SUBTLE_GREEN = '#02BF86';
 
 export const lightTheme = {
   white: WHITE,

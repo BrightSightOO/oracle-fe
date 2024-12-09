@@ -38,10 +38,14 @@ export type Currency = Account<CurrencyAccountData>;
 
 export type CurrencyAccountData = {
   accountType: AccountType;
+  mint: PublicKey;
   minimumBond: bigint;
 };
 
-export type CurrencyAccountDataArgs = { minimumBond: number | bigint };
+export type CurrencyAccountDataArgs = {
+  mint: PublicKey;
+  minimumBond: number | bigint;
+};
 
 export function getCurrencyAccountDataSerializer(): Serializer<
   CurrencyAccountDataArgs,
@@ -51,6 +55,7 @@ export function getCurrencyAccountDataSerializer(): Serializer<
     struct<CurrencyAccountData>(
       [
         ["accountType", getAccountTypeSerializer()],
+        ["mint", publicKeySerializer()],
         ["minimumBond", u64()],
       ],
       { description: "CurrencyAccountData" },
@@ -119,17 +124,19 @@ export function getCurrencyGpaBuilder(context: Pick<Context, "rpc" | "programs">
   return gpaBuilder(context, programId)
     .registerFields<{
       accountType: AccountTypeArgs;
+      mint: PublicKey;
       minimumBond: number | bigint;
     }>({
       accountType: [0, getAccountTypeSerializer()],
-      minimumBond: [1, u64()],
+      mint: [1, publicKeySerializer()],
+      minimumBond: [33, u64()],
     })
     .deserializeUsing<Currency>((account) => deserializeCurrency(account))
     .whereField("accountType", AccountType.Currency);
 }
 
 export function getCurrencySize(): number {
-  return 9;
+  return 41;
 }
 
 export function findCurrencyPda(

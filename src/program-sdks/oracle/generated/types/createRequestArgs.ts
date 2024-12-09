@@ -20,6 +20,7 @@ import { getRequestDataSerializer } from ".";
 export type CreateRequestArgs = {
   __kind: "V1";
   reward: bigint;
+  bond: bigint;
   timestamp: bigint;
   data: RequestData;
 };
@@ -27,6 +28,7 @@ export type CreateRequestArgs = {
 export type CreateRequestArgsArgs = {
   __kind: "V1";
   reward: number | bigint;
+  bond: number | bigint;
   timestamp: number | bigint;
   data: RequestDataArgs;
 };
@@ -41,6 +43,7 @@ export function getCreateRequestArgsSerializer(): Serializer<
         "V1",
         struct<GetDataEnumKindContent<CreateRequestArgs, "V1">>([
           ["reward", u64()],
+          ["bond", u64()],
           ["timestamp", i64()],
           ["data", getRequestDataSerializer()],
         ]),

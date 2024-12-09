@@ -14,28 +14,16 @@ import type {
 
 import { dataEnum, struct, u64 } from "@metaplex-foundation/umi/serializers";
 
-export type CreateAssertionArgs = { __kind: "V1"; bond: bigint; value: bigint };
+export type CreateAssertionArgs = { __kind: "V1"; value: bigint };
 
-export type CreateAssertionArgsArgs = {
-  __kind: "V1";
-  bond: number | bigint;
-  value: number | bigint;
-};
+export type CreateAssertionArgsArgs = { __kind: "V1"; value: number | bigint };
 
 export function getCreateAssertionArgsSerializer(): Serializer<
   CreateAssertionArgsArgs,
   CreateAssertionArgs
 > {
   return dataEnum<CreateAssertionArgs>(
-    [
-      [
-        "V1",
-        struct<GetDataEnumKindContent<CreateAssertionArgs, "V1">>([
-          ["bond", u64()],
-          ["value", u64()],
-        ]),
-      ],
-    ],
+    [["V1", struct<GetDataEnumKindContent<CreateAssertionArgs, "V1">>([["value", u64()]])]],
     { description: "CreateAssertionArgs" },
   ) as Serializer<CreateAssertionArgsArgs, CreateAssertionArgs>;
 }

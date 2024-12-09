@@ -1,6 +1,6 @@
 import { MainColorSet } from '@/theme/types';
 import { Flex, HStack, Text, VStack, useTheme } from '@chakra-ui/react';
-import { faEarthAmericas } from '@fortawesome/free-solid-svg-icons';
+import { faEarthAmericas, faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactNode } from 'react';
 
@@ -21,7 +21,7 @@ const PageHeader = ({
           <HStack my='20px' w='full' justifyContent='flex-start'>
             <Flex mr='10px'>
               <FontAwesomeIcon
-                icon={faEarthAmericas}
+                icon={faMoneyBillTransfer}
                 width='54px'
                 color={white}
               />

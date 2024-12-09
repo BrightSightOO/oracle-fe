@@ -11,3 +11,5 @@ export * from "./currency";
 export * from "./oracle";
 export * from "./request";
 export * from "./stake";
+export * from "./vote";
+export * from "./voting";

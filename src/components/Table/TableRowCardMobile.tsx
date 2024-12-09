@@ -7,32 +7,35 @@ import {
   Text,
   Tr,
   VStack,
-  useDisclosure,
   useTheme,
 } from '@chakra-ui/react';
-import ProposalDrawer from '../Proposals/ProposalDrawer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleArrowRight,
   faEarthAmericas,
 } from '@fortawesome/free-solid-svg-icons';
-import USDCLogo from '../Svg/USDCLogo';
-import { OracleType } from '@/types/tableData';
+import { iOracle } from '@/types/table';
 import { MainColorSet } from '@/theme/types';
+import { formatLongDate } from '@/utils/time';
+import { displayAmount } from '@metaplex-foundation/umi';
 
-const TableDataCardMobile = ({
+const TableRowCardMobile = ({
   row,
   bodyInfo,
+  onDrawerOpen,
 }: {
-  row: OracleType;
+  row: iOracle;
   bodyInfo: Record<string, string>[];
+  onDrawerOpen: () => void;
 }) => {
   const { colors } = useTheme();
   const { textGrey, black, bluePrimary, background } = colors as MainColorSet;
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const displayQueryData = (data: iOracle) => {
+    const formattedDate = formatLongDate.format(
+      Number(data.requestedTime * 1000n),
+    );
 
-  const displayQueryData = (data: OracleType) => {
     return (
       <VStack w='full'>
         <HStack w='full' justifyContent='space-between'>
@@ -71,7 +74,7 @@ const TableDataCardMobile = ({
             {data.chain}
           </Text>
           <Text textStyle='Body' fontSize='12px' color={textGrey}>
-            {data.dateCreated}
+            {formattedDate}
           </Text>
           <Divider orientation='vertical' bg={textGrey} />
         </HStack>
@@ -92,12 +95,18 @@ const TableDataCardMobile = ({
               {info.title.charAt(0).toUpperCase() + info.title.slice(1)}
             </Text>
             <HStack>
-              <USDCLogo width='16px' height='16px' />
+              {/* 
+              TODO - use a mapping of known asset images
+              <Image
+                width='16px'
+                height='16px'
+                src={'assets/common/usdc_logo.svg'}
+              /> */}
               <Text>
-                {info.title in row ? row[info.title as keyof OracleType] : null}
+                {info.title in row ? displayAmount(row[info.title], 3) : null}
               </Text>
             </HStack>
-          </HStack>
+          </HStack>,
         );
       } else if (info.title === 'title') {
         elementsToRender.push(displayQueryData(row));
@@ -114,9 +123,12 @@ const TableDataCardMobile = ({
               noOfLines={2}
               maxW={info.maxW || 'fit-content'}
             >
-              {info.title in row ? row[info.title as keyof OracleType] : null}
+              {info.title in row
+                ? // @ts-ignore - w/o/e refactor row
+                  row[info.title]
+                : null}
             </Text>
-          </HStack>
+          </HStack>,
         );
       }
     }
@@ -124,8 +136,7 @@ const TableDataCardMobile = ({
   };
 
   return (
-    <Tr cursor='pointer' onClick={onOpen}>
-      <ProposalDrawer data={row} isOpen={isOpen} onClose={onClose} />
+    <Tr cursor='pointer' onClick={onDrawerOpen}>
       <VStack w='full'>
         <Td px='20px' py='20px' w='full' style={{ width: 'full' }}>
           <>
@@ -138,4 +149,4 @@ const TableDataCardMobile = ({
   );
 };
 
-export default TableDataCardMobile;
+export default TableRowCardMobile;

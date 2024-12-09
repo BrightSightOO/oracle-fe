@@ -11,7 +11,7 @@ const Header = () => {
   const WalletMultiButtonDynamic = dynamic(
     async () =>
       (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
-    { ssr: false }
+    { ssr: false },
   );
 
   return (
@@ -24,9 +24,7 @@ const Header = () => {
         h='66px'
         px='16px'
       >
-        <NavLink href={'/'} passHref shallow>
-          <Text color={white}>Bright Sight</Text>
-        </NavLink>
+        <Text color={white}>Bright Sight Optimistic Oracle</Text>
         <Navigation />
         <Show above='md'>
           <Flex justifyContent='center' minW='190px'>

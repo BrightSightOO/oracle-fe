@@ -13,7 +13,7 @@ export function findRewardPda(
 ): Pda {
   const programId = getOptimisticOracleProgramId(context);
   return context.eddsa.findPda(programId, [
-    string({ size: "variable" }).serialize("request"),
+    string({ size: "variable" }).serialize("reward"),
     publicKey().serialize(seeds.request),
   ]);
 }
